@@ -3,26 +3,18 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const express = require('express');
 const app = express();
+
+const config = require('./config.json')
+
 var firebase = require('firebase');
+
 admin.initializeApp();
-
-var config = {
-    apiKey: "AIzaSyA5cWJ5_ESPot_Gu_nvo1uM7LLTN0ZFNP4",
-    authDomain: "smartfarm-51bd8.firebaseapp.com",
-    databaseURL: "https://smartfarm-51bd8.firebaseio.com",
-    projectId: "smartfarm-51bd8",
-    storageBucket: "smartfarm-51bd8.appspot.com",
-    messagingSenderId: "244368953792",
-    appId: "1:244368953792:web:5ef83f2b0da634b5a23825",
-    measurementId: "G-BFKMECR86Q"
-  };
-
-firebase.initializeApp(config);
+const db = admin.firestore();
+firebase.initializeApp(config.config);
 
 //view all plants
-app.get('/Planten', (req, res)=> {
-    admin
-        .firestore()
+app.get('/allPlants', (req, res)=> {
+        db
         .collection('Planten').orderBy('Timestamp', 'desc')
         .get()
         .then((data) => {
@@ -44,8 +36,7 @@ app.post('/createPlant', (req, res) => {
         Name: 'Tomato',
         Timestamp: new Date().toISOString()
     };
-    admin
-    .firestore()
+    db
     .collection('Planten')
     .add(newPlant)
     .then(doc => {
@@ -61,19 +52,34 @@ app.post('/createPlant', (req, res) => {
 app.post('/signup', (req, res) => {
     const newUser = {
         email: req.body.email,
-        password: req.body.password
+        password: req.body.password,
+        handle: req.body.handle
     }
 
-    firebase.auth().createUserWithEmailAndPassword(newUser.email, newUser.password)
-    .then(data => {
-        return res.status(201)
-        .json({ message: `${data.user.email} signed up`})
-    })
-    .catch(err => {
-        return res.status(500).json({ error: err})
-    });
+    db.doc(`/users/${newUser.handle}`).get()
+        .then(doc =>{
+            if(doc.exists){
+                return res.status(400).json({handle: 'already taken'})
+            }
+            else{
+               return firebase
+                .auth()
+                .createUserWithEmailAndPassword(newUser.email, newUser.password)
+            }
+        })
+        .then((data) =>{
+            return res.status(201).json({data});
+        })
+        .catch(err => {
+            if(err.code === 'auth/email-already-in-use'){
+                return res.status(400).json({ email:`Email is already taken`})
+            }
+            else {
+            return res.status(500).json({ error: err})
+            }
+        });
 });
 
-//https://us-central1-smartfarm-51bd8.cloudfunctions.net/api/
+//https://us-central1-smartfarm-51bd8.cloudfunctions.net/api/    API ENDPOINT
 exports.api = functions.https.onRequest(app);
 
