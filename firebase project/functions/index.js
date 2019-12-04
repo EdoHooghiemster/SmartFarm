@@ -33,8 +33,8 @@ app.get('/allPlants', (req, res)=> {
 //createPlant
 app.post('/createPlant', (req, res) => {
     const newPlant = {
-        Name: 'Tomato',
-        Timestamp: new Date().toISOString()
+        name: req.body.name,
+        timestamp: new Date().toISOString()
     };
     db
     .collection('Planten')
@@ -79,6 +79,25 @@ app.post('/signup', (req, res) => {
             }
         });
 });
+
+app.post('/login', (req, res) => {
+    const user = {
+        email : req.body.email,
+        password: req.body.password
+    };
+    
+    firebase.auth().signInAndRetrieveDataWithCredential(user.email, user.password)
+        .then(data => {
+            return data.user.getIdToken();
+        })
+       .then(token => {
+           return res.json(token)
+       })
+       .catch(err => {
+           console.error(err)
+           return res.status(500).json({error: err.code})
+       })
+})
 
 //https://us-central1-smartfarm-51bd8.cloudfunctions.net/api/    API ENDPOINT
 exports.api = functions.https.onRequest(app);
