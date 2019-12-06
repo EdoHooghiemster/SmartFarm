@@ -55,7 +55,8 @@ class App extends React.Component{
         </NavItem>    
     </SideNav.Nav>
     </SideNav>
-    
+          
+    <div className="container">
     <Switch>
           <Route path="/planten">
             <Planten />
@@ -67,7 +68,7 @@ class App extends React.Component{
             <Dashboard />
           </Route>
     </Switch>
-
+    </div>
     </div>
     </Router>
   );

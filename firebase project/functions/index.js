@@ -30,23 +30,58 @@ app.get('/allPlants', (req, res)=> {
         }).catch((err) => console.error(err));
 })
 
+const FBAuth = (req, res, next) => {
+    let idToken;
+    if(req.headers.authorization && req.headers.authorization.startsWith('Bearer ')){
+        idToken = req.headers.authorization.split('Bearer ')[1];
+    }
+    else {
+        return res.status(403).json({error : 'Unathorized'});
+    }
+
+    admin.auth().verifyIdToken(idToken)
+    .then(decodedToken => {
+        req.user = decodedToken;
+        return db.collection('users')
+            .where('userId', '==', req.user.uid)
+            .limit(1)
+            .get();
+    })
+    .then(data => {
+        req.user.handle = data.docs[0].data.handle;
+        return next()
+    })
+    .catch(err => {
+        console.error('error while verifying token', err);
+        return res.status(403).json(err);
+    })
+}
+
 //createPlant
-app.post('/createPlant', (req, res) => {
+app.post('/createPlant', FBAuth, (req, res) => {
+    
+        
     const newPlant = {
         name: req.body.name,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        userHandle: req.user.handle
     };
     db
     .collection('Planten')
     .add(newPlant)
     .then(doc => {
-        return res.json({message: 'Tomato is added'});
+        return res.json(doc);
     })
     .catch((err) => {
         res.status(500).json({error: 'Something went wrong'})
         console.error(err);
     });
 });
+
+const isEmpty = (string) => {
+    if(string.trim() === '') return true;
+    else return false
+}
 
 //registration user
 app.post('/signup', (req, res) => {
@@ -55,7 +90,8 @@ app.post('/signup', (req, res) => {
         password: req.body.password,
         handle: req.body.handle
     }
-
+   
+    let token, userId
     db.doc(`/users/${newUser.handle}`).get()
         .then(doc =>{
             if(doc.exists){
@@ -67,12 +103,26 @@ app.post('/signup', (req, res) => {
                 .createUserWithEmailAndPassword(newUser.email, newUser.password)
             }
         })
-        .then((data) =>{
-            return res.status(201).json({data});
+        .then(data => {
+            userId = data.user.uid
+            return data.user.getIdToken();
+        })
+        .then(idToken => {
+            token = idToken;
+            const userCredentials = {
+                handle: newUser.handle,
+                email: newUser.email,
+                createdAt: new Data().toISOString(),
+                userId: userId
+            };
+            db.doc(`/users/${newUser.handle}`).set(userCredentials);
+        })
+        .then(() => {
+            return res.status(201).json({token}) 
         })
         .catch(err => {
             if(err.code === 'auth/email-already-in-use'){
-                return res.status(400).json({ email:`Email is already taken`})
+                return res.status(400).json({ email:`Email is taken`})
             }
             else {
             return res.status(500).json({ error: err})
@@ -85,8 +135,13 @@ app.post('/login', (req, res) => {
         email : req.body.email,
         password: req.body.password
     };
-    
-    firebase.auth().signInAndRetrieveDataWithCredential(user.email, user.password)
+
+    if(isEmpty(user.email)) errors.email = "Must not be Empty";
+    if(isEmpty(user.password)) errors.email = "Must not be Empty";
+
+    if(Object.keys(errors).length > 0) return res.status(400).json(errors);
+
+    firebase.auth().signInWithEmailAndPassword(user.email, user.password)
         .then(data => {
             return data.user.getIdToken();
         })
