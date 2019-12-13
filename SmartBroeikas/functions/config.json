@@ -1,0 +1,12 @@
+{
+    "config":{
+        "apiKey": "AIzaSyAZ3FFiClk2l-MH1q6fdP7kEaN_WTwqT68",
+        "authDomain": "smartbroeikas.firebaseapp.com",
+        "databaseURL": "https://smartbroeikas.firebaseio.com",
+        "projectId": "smartbroeikas",
+        "storageBucket": "smartbroeikas.appspot.com",
+        "messagingSenderId": "571815527020",
+        "appId": "1:571815527020:web:adfce04e4f23592a498e49",
+        "measurementId": "G-4SJV5GT3EN"
+    }
+}
