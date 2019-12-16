@@ -1,5 +1,29 @@
 const {db} = require('../utilities/admin')
 
+exports.getPlant = (req, res) => {
+    let Data = {};
+    db.doc(`/plants/${req.params.plantId}`).get()
+        .then(doc => {
+            if(!doc.exists){
+                return res.status(404).json({error: 'Plant not found'})
+            }
+            Data = doc.data();
+            Data.plantId = doc.id
+            return db.collection('comments').orderBy('createdAt', 'desc')
+            .where('plantId', '==', req.params.plantId).get();
+        })
+        .then(data => {
+            Data.comments = []
+            data.forEach(doc => {
+                Data.comments.push(doc.data())
+            })
+            return res.json(Data)
+        })
+        .catch(err => {
+            return res.status(500).json({error: err.code})
+        })
+}
+
 exports.getPlants = (req, res) => {
 db
 .collection('plants')
@@ -13,7 +37,7 @@ db
             body: doc.data().body,
             userHandle: doc.data().userHandle, 
             createdAt: doc.data().createdAt
-        }) 
+        })
     });
     return res.json(plants);
 })
@@ -40,3 +64,27 @@ exports.createPlant = (req, res) => {
         console.log(err)
     }) 
 }
+
+exports.commentOnPlant = (req, res) => {
+    if (req.body.body.trim() === '') return res.status(400).json({error: 'must not be empty'})
+    const newComment = {
+        body: req.body.body,
+        createdAt : new Date().toISOString(),
+        plantId: req.params.plantId,
+        userHandle: req.user.handle,
+    }
+    db.doc(`/plants/${req.params.plantId}`).get()
+        .then(doc => {
+            if(!doc.exists){
+                return res.status(404).json({error: 'not found'})
+            }
+            return db.collection('comments').add(newComment)
+        })
+        .then(() => {
+            res.json(newComment);
+        })
+        .catch(err => {
+            return res.status(500).json({error: 'something went wrong'})
+        })
+}
+

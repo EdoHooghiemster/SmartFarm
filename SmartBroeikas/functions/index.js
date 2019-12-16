@@ -3,15 +3,22 @@ const app = require('express')();
 
 const FBAuth = require('./utilities/FBAuth')
 
-const {getPlants, createPlant} = require('./handlers/plants')
-const {signUp, Login} = require('./handlers/users')
+const {getPlants, createPlant, getPlant, commentOnPlant} = require('./handlers/plants')
+const {signUp, Login, signUp2, getUser} = require('./handlers/users')
 
+const cors = require('cors')
+
+app.use(cors())
+//plant func
 app.get('/getplants', getPlants)
 app.post('/createplant', FBAuth, createPlant)
+app.get('/plant/:plantId', getPlant)
+app.post('/plant/:plantId/comment', FBAuth, commentOnPlant)
 
+//user func
 app.post('/signup', signUp)
 app.post('/login', Login) 
-
-
-//https://us-central1-smartbroeikas.cloudfunctions.net/api
+app.post('/user', FBAuth, signUp2)
+app.get('/details', FBAuth, getUser)
+//https://us-central1-smartbroeikas.cloudfunctions.net/api 
 exports.api = functions.region('europe-west1').https.onRequest(app)
