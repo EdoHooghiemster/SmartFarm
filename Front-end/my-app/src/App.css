@@ -21,6 +21,35 @@
   color: white;
 }
 
+.sidenav---sidenav---_2tBP{
+  background: #270F27 !important;
+  min-width: 150px !important;
+}
+
+.navbar{
+  background-color: #270F27 !important;
+  line-height: 0px;
+}
+
 .App-link {
   color: #09d3ac;
+}
+
+/* .sidenav---navtext---1AE_f{
+  position: relative;
+  margin-left: left 20px !important;
+}
+
+.sidenav---sidenav-navitem---uwIJ-{
+  position: left 20px !important;
+} */
+
+.imgtandwiel{
+  width: 2vw;
+  margin: 5px;
+}
+
+.imgdashboard{
+  width: 2vw;
+  margin: 5px;
 }

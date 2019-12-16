@@ -10,9 +10,13 @@ import {
   Link,
   Redirect
 } from "react-router-dom";
-import Planten from './components/Planten';
-import Users from './components/Users';
 import Dashboard from './components/Dashboard';
+import Feed from './components/Feed';
+import Users from './components/Users';
+import tandwiel from './tandwiel.svg';
+import FAQ from './FAQ.svg';
+import dashboard from './dashboard.svg';
+import feed from './feed.svg';
 
 class App extends React.Component{
   
@@ -26,46 +30,59 @@ class App extends React.Component{
 
 
     <div className="App">
-    <Nav style={{backgroundColor: '#49184F'}} className="justify-content-center">
+    <Nav class="navbar justify-content-center">
     <Navbar  variant="dark" >
     <Navbar.Brand href="#home" style={{position:"center"}}>Smart Farm</Navbar.Brand>
     </Navbar>
     </Nav>
 
-    <SideNav style={{backgroundColor:"#270F27"}}
+<div className="sidebar">
+   <SideNav 
           onSelect={(selected) => {
           }}
     >
 
+
     <SideNav.Nav defaultSelected="/">
         <NavItem eventKey="/">  
             <NavText>
-                <Link to="/">Dashboard</Link>
+                <Link to="/">Feed</Link>
             </NavText>
         </NavItem>
         <NavItem eventKey="about">  
             <NavText>
-            <Link to="/planten">Planten</Link>
-            </NavText>
-        </NavItem>
-        <NavItem eventKey="users">  
-            <NavText>
-                <Link to="/users">Users</Link> 
+            <img className="imgdashboard" src={dashboard}/>
+            <Link to="/Dashboard">Dashboard</Link>
             </NavText>
         </NavItem>    
+        <NavItem eventKey="about">  
+            <NavText>
+              Over ons
+            </NavText>
+        </NavItem>  
+        <NavItem eventKey="about">  
+            <NavText>
+            <img className="imgFAQ" src={FAQ}/>
+              FAQ
+            </NavText>
+        </NavItem>  
+        <NavItem eventKey="about">  
+            <NavText>
+            <img className="imgtandwiel" src={tandwiel}/>
+              Instellingen
+            </NavText>
+        </NavItem>  
     </SideNav.Nav>
     </SideNav>
-          
+    </div>
+ 
     <div className="container">
     <Switch>
-          <Route path="/planten">
-            <Planten />
-          </Route>
-          <Route path="/users">
-            <Users />
+          <Route path="/Dashboard">
+            <Dashboard />
           </Route>
           <Route path="/">
-            <Dashboard />
+            <Feed />
           </Route>
     </Switch>
     </div>
