@@ -2,6 +2,9 @@
 import Adafruit_GPIO.SPI as SPI
 import Adafruit_MCP3008
 
+SPI_PORT = 0
+SPI_DEVICE = 0
+
 class Sensor:
     def __init__(self, name, unit):
         self.name = name
@@ -13,7 +16,7 @@ class Sensor:
         return x
     
     def getReadout(self):
-        return str(self.value) + " " + self.unit
+        return str(round(self.value)) + " " + self.unit
 
 class AnalogSensor(Sensor):
     def __init__(self, name, unit, mcp, channel):
@@ -37,6 +40,9 @@ class LightSensor(AnalogSensor):
 class SoilMoistureSensor(AnalogSensor):
     def __init__(self, name, unit, mcp, channel):
         super().__init__(name, unit, mcp, channel)
+
+    def calibrationFunction(self, x):
+        return x / 10.23
         
 class TemperatureSensor(DigitalSensor):
     def __init__(self, name, unit):
