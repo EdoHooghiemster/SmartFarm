@@ -2,8 +2,12 @@
 import Adafruit_GPIO.SPI as SPI
 import Adafruit_MCP3008
 
+# Import DHT library
+import Adafruit_DHT as DHT
+
 SPI_PORT = 0
 SPI_DEVICE = 0
+DHT_PIN = 13
 
 class Sensor:
     def __init__(self, name, unit):
@@ -47,10 +51,22 @@ class SoilMoistureSensor(AnalogSensor):
 class TemperatureSensor(DigitalSensor):
     def __init__(self, name, unit):
         super().__init__(name, unit)
+        self.sensor = DHT.DHT22
+	
+    def read(self):
+        dummy, self.rawValue = DHT.read_retry(self.sensor, DHT_PIN)
+        self.value = self.rawValue
+        return self.value
 
 class HumiditySensor(DigitalSensor):
     def __init__(self, name, unit):
         super().__init__(name, unit)
+        self.sensor = DHT.DHT22
+
+    def read(self):
+        self.rawValue, dummy = DHT.read_retry(self.sensor, DHT_PIN)
+        self.value = self.rawValue
+        return self.value
 
 class Main:
     def __init__(self):
@@ -64,6 +80,10 @@ class Main:
         s = SoilMoistureSensor("SMS3", "%", mcp, 2)
         sensors.append(s)
         s = LightSensor("Light", "lux", mcp, 3)
+        sensors.append(s)
+        s = TemperatureSensor("Temperature", "C")
+        sensors.append(s)
+        s = HumiditySensor("Humidity", "%")
         sensors.append(s)
 
         data = [s.read() for s in sensors]
