@@ -1,17 +1,47 @@
 .App {
-  text-align: center;
+/*   text-align: center; */
+  
+}
+.imgtandwiel{
+  width: 1.7vw;
+  margin: 5px;
+}
+
+.imgdashboard{
+  width: 1.7vw;
+  margin: 5px;
+}
+
+.imgfeed{
+  width: 1.7vw;
+  margin: 5px;
+}
+
+.imgFAQ{
+  width: 1.7vw;
+  margin: 5px;
+}
+
+.imgaboutus{
+  width: 1.7vw;
+  margin: 5px;
+}
+.imgarrowwhite {
+  width: 0.6vw;
+  margin: 0px;
+  /* display: flex !important; */
+}
+
+.imgarrowblack{
+  width: 2vw;
+  margin: 5px;
 }
 
 .App-logo {
   height: 40vmin;
 }
 
-.purple {
-  background-color: purple;
-}
-
 .App-header {
-  background-color: #282c34;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -21,35 +51,60 @@
   color: white;
 }
 
-.sidenav---sidenav---_2tBP{
+.sidenav---sidenav---_2tBP{ /*sidenav*/
   background: #270F27 !important;
-  min-width: 150px !important;
+  min-width: 1vh !important;
+/*   min-height: 93vh !important; */
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  display: grid;
+  grid-template-columns: 1fr !important;
+  /* position: relative; */
+  border-image-repeat: repeat;
+  top: 8vh !important;
+  /* font-size: 90px; */
+}
+.sidenav---collapsed---LQDEv{
+  position: relative;
+  top: 30vh;
+}
+.navbar{
+  line-height: 0px;
 }
 
-.navbar{
-  background-color: #270F27 !important;
-  line-height: 0px;
+.bg{
+  background-image: url("./vaporwave.svg");
+  background-size: 120%;
+  
+  height: 8vh;
+  background-position-x: -10vh;
 }
 
 .App-link {
   color: #09d3ac;
 }
 
-/* .sidenav---navtext---1AE_f{
-  position: relative;
-  margin-left: left 20px !important;
+
+.navbar-brand{ /*smarfarm title*/
+  font-size: 5.4vh !important;
+  font-family: good times;  
 }
 
-.sidenav---sidenav-navitem---uwIJ-{
-  position: left 20px !important;
-} */
-
-.imgtandwiel{
-  width: 2vw;
-  margin: 5px;
+.sidebar2{ /*3 onderste gedeeltes*/
+  /* position: relative; */
+  /* display: flex;
+   *//* flex-direction: column;
+  justify-content: space-between;   */
+  /* align-items: flex-end; */  
+  /* top: 430px !important; */
+  /* font-size: 56px; */
+  
+  position: fixed;
+  bottom: 0;
+  left: 0;
 }
 
-.imgdashboard{
-  width: 2vw;
-  margin: 5px;
+.gr__localhost{
+  
 }

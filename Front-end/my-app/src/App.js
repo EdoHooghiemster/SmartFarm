@@ -17,6 +17,10 @@ import tandwiel from './tandwiel.svg';
 import FAQ from './FAQ.svg';
 import dashboard from './dashboard.svg';
 import feed from './feed.svg';
+import arrowwhite from './arrowwhite.svg';
+import arrowblack from './arrowblack.svg';
+import aboutus from './aboutus.svg';
+import vaporwave from './vaporwave.svg'
 
 class App extends React.Component{
   
@@ -30,10 +34,12 @@ class App extends React.Component{
 
 
     <div className="App">
-    <Nav class="navbar justify-content-center">
-    <Navbar  variant="dark" >
+    <Nav className="navbar bg">
+    <Navbar className=" navbar justify-content-center"  variant="dark" >
+      
     <Navbar.Brand href="#home" style={{position:"center"}}>Smart Farm</Navbar.Brand>
     </Navbar>
+    <img className="imgarrowwhite justify-content-end" src={arrowwhite}/>
     </Nav>
 
 <div className="sidebar">
@@ -41,23 +47,29 @@ class App extends React.Component{
           onSelect={(selected) => {
           }}
     >
-
-
+     {/*  <br></br>
+      <br></br> */}
     <SideNav.Nav defaultSelected="/">
         <NavItem eventKey="/">  
+            
             <NavText>
+            <img className="imgfeed" src={feed}/>
                 <Link to="/">Feed</Link>
             </NavText>
         </NavItem>
-        <NavItem eventKey="about">  
+        <NavItem eventKey="dashboard">  
             <NavText>
             <img className="imgdashboard" src={dashboard}/>
             <Link to="/Dashboard">Dashboard</Link>
             </NavText>
-        </NavItem>    
+        </NavItem>
+
+<div className="sidebar2">
+        <SideNav.Nav onSelect="/">
         <NavItem eventKey="about">  
             <NavText>
-              Over ons
+            <img className="imgaboutus" src={aboutus}/>
+             Over ons
             </NavText>
         </NavItem>  
         <NavItem eventKey="about">  
@@ -72,10 +84,13 @@ class App extends React.Component{
               Instellingen
             </NavText>
         </NavItem>  
-    </SideNav.Nav>
+        </SideNav.Nav>
+    </div>
+        </SideNav.Nav>
     </SideNav>
     </div>
- 
+    
+
     <div className="container">
     <Switch>
           <Route path="/Dashboard">
