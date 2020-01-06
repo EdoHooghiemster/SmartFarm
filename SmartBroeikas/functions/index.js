@@ -3,7 +3,7 @@ const app = require('express')();
 
 const FBAuth = require('./utilities/FBAuth')
 
-const {getPlants, createPlant, getPlant, commentOnPlant} = require('./handlers/plants')
+const {getPlants, createPlant, getPlant, commentOnPlant, likePlant, unlikePlant} = require('./handlers/plants')
 const {signUp, Login, signUp2, getUser} = require('./handlers/users')
 
 const cors = require('cors')
@@ -14,6 +14,8 @@ app.get('/getplants', getPlants)
 app.post('/createplant', FBAuth, createPlant)
 app.get('/plant/:plantId', getPlant)
 app.post('/plant/:plantId/comment', FBAuth, commentOnPlant)
+app.get('/plant/:plantId/like', FBAuth, likePlant)
+app.get('/plant/:plantId/unlike', FBAuth, unlikePlant)
 
 //user func
 app.post('/signup', signUp)

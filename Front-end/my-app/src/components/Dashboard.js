@@ -5,7 +5,7 @@ import axios from 'axios';
 //Home Pagina
 export class Dashboard extends Component {
     getfunc = () => {
-        axios.get('https://us-central1-smartfarm-51bd8.cloudfunctions.net/api/allplants')
+        axios.get('https://europe-west1-smartbroeikas.cloudfunctions.net/api/getplants')
         .then(function (response) {
             // handle success
             console.log(response);
