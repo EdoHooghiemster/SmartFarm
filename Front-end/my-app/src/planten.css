@@ -1,0 +1,49 @@
+.btn-plant {
+    padding: 10px;
+    width: 100%;
+    font-size: 14pt;
+    border: 0px;
+    background-color: #5b7828 !important;
+}
+
+.dock-box-outer {
+    background-color: rgba(91, 120, 40, 0.3);
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    min-height: 200px;
+    max-height: 250px;
+}
+
+.dock-title {
+    text-align: left;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #49184f;
+}
+
+.taken {
+    /* border-bottom: 2px solid #e86969; */
+    background-color: rgba(232, 105, 105, 0.5);
+}
+
+.available {
+    /* border-bottom: 2px solid #69e88a; */
+    background-color: rgba(105, 232, 138, 0.5);
+}
+
+.dock-box-inner {
+    background-color: white;
+    padding: 10px;
+    border-radius: 2px;
+}
+
+.dock-description {
+    margin-top: 45px;
+    font-weight: 700;
+    font-size: 14pt;
+    margin-bottom: 10px;
+}
+
+.dock-available {
+    margin-bottom: 10px;
+}
