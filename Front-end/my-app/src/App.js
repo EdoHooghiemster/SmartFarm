@@ -18,9 +18,11 @@ import FAQ from './FAQ.svg';
 import dashboard from './dashboard.svg';
 import feed from './feed.svg';
 import arrowwhite from './arrowwhite.svg';
+import profileicon from './profileicon.png';
 import arrowblack from './arrowblack.svg';
 import aboutus from './aboutus.svg';
 import vaporwave from './vaporwave.svg'
+import vaporwave2 from './vaporwave2.jpg'
 
 class App extends React.Component{
   
@@ -39,7 +41,16 @@ class App extends React.Component{
       
     <Navbar.Brand href="#home" style={{position:"center"}}>Smart Farm</Navbar.Brand>
     </Navbar>
-    <img className="imgarrowwhite justify-content-end" src={arrowwhite}/>
+    <ul class="secondary_navbar">
+      <li class="secondary_navbar_item">
+         {/* <img className="profileicon justify-content-end" src={profileicon}/> */}
+         <img className="imgprofileicon" src={profileicon}/>
+      </li>
+      <li class="secondary_navbar_item">
+        {/* <img className="imgarrowwhite justify-content-end" src={arrowwhite}/> */}
+        <img className="imgarrowwhite" src={arrowwhite}/>
+      </li>
+    </ul>
     </Nav>
 
 <div className="sidebar">
