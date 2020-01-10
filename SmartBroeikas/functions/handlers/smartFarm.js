@@ -18,7 +18,7 @@ exports.linkSmartFarm = (req,res) => {
     .collection('broeikassen')
     .add(newSmartFarm)
     .then((doc) => {
-        res.json(doc)
+        res.json({message: 'smartfarm linked' ,docu: doc.get()})
     })
     .catch((err) => {
         res.status(500).json({ error: 'something went wrong oopsie'})
@@ -47,7 +47,7 @@ exports.linkDock = (req,res) =>
                 return res.json({message:"plant docked", doc: doc })
             })
             .catch(err => {
-                return res.status(403).json({general: 'wrong credentials/not logged in'})
+                return res.status(403).json({general: 'wrong credentials/not logged in' ,error : err})
             })
         }
         else{
