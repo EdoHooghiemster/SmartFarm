@@ -12,7 +12,8 @@ exports.signUp = (req, res) => {
         email: req.body.email,
         password: req.body.password,
         confirmPassword: req.body.confirmPassword,
-        handle: req.body.handle
+        handle: req.body.handle,
+        hasSmartFarm: false
     };
 
     const { valid, errors} = validateSignupData(newUser)
@@ -30,7 +31,7 @@ exports.signUp = (req, res) => {
             return firebase
                     .auth()
                     .createUserWithEmailAndPassword(newUser.email, newUser.password)
-        } 
+        }
     })
     .then(data => {
         userId = data.user.uid
@@ -100,16 +101,33 @@ exports.signUp2 = (req, res) => {
 
 exports.getUser = (req, res) => {
     let Data = {};
+
     db.doc(`/users/${req.user.handle}`).get()
         .then(doc => {
-            if(doc.exists){
-                Data.credentials = doc.data();
-                return res.json(Data);
+            if(!doc.exists){
+                return res.status(404).json({error: 'error not found'})
             }
-        })
-        .catch(err => {
-            return res.status(500).json({error: err.code})
-        })
+            Data.credentials = doc.data();
+            return db.collection('broeikassen').where('userHandle', '==', req.user.handle).get();
+            })
+            .then(doc => {
+                Data.Broeikas = [];
+                doc.forEach(data => {
+                    Data.Broeikas.push(data.data())
+                })
+                return db.collection('plants').where('userHandle', '==', req.user.handle).get();
+            })
+            .then(doc =>{
+                Data.Planten = [];
+                doc.forEach(data => {
+                    Data.Planten.push(data.data())
+                })
+                return res.json(Data);
+            })
+            .catch(err => {
+                return res.status(401).json({error: err})
+            })
+      
 
 }
 
