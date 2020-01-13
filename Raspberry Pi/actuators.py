@@ -21,17 +21,17 @@ class Actuator:
 class Main:
     def __init__(self):
         actuators = []
-        a = Actuator("valve1", 24)
+        a = Actuator("valve1", 19)
         actuators.append(a)
-        a = Actuator("valve2", 27)
+        a = Actuator("valve2", 16)
         actuators.append(a)
-        a = Actuator("valve3", 25)
+        a = Actuator("valve3", 26)
         actuators.append(a)
-        a = Actuator("valve4", 28)
+        a = Actuator("valve4", 20)
         actuators.append(a)
-        a = Actuator("light", 29)
+        a = Actuator("light", 40
         actuators.append(a)
-        a = Actuator("soilSensors", 22)
+        a = Actuator("soilSensors", 6)
         actuators.append(a)
 
         actuators[0].on()
