@@ -29,7 +29,7 @@ class Main:
         actuators.append(a)
         a = Actuator("valve4", 20)
         actuators.append(a)
-        a = Actuator("light", 40
+        a = Actuator("light", 21)
         actuators.append(a)
         a = Actuator("soilSensors", 6)
         actuators.append(a)
