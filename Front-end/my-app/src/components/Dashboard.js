@@ -4,7 +4,7 @@ import { UserDetails } from './UserDetails';
 import { css } from "@emotion/core";
 import ClipLoader from "react-spinners/ClipLoader";
 
-//Home Pagina
+//Planten Pagina
 export class Dashboard extends Component {
 
     constructor(props) {
