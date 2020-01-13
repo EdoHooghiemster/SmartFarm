@@ -38,3 +38,5 @@ class Main:
         actuators[0].on()
         sleep(2)
         actuators[0].off()
+
+Main()
