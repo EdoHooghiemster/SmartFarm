@@ -1,0 +1,19 @@
+.secondary_navbar {
+    font-family: 'comic sans';
+    
+    &_item {
+        display: inline;
+    }
+
+    &_icon {
+        height: 30px;
+    }
+}
+
+// .navbar{
+//     background: $primary-color;
+
+//     &__item {
+
+//     }
+// }
