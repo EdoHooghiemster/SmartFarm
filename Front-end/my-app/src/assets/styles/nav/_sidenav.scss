@@ -1,0 +1,28 @@
+.sidenav {
+
+    &_upper {
+
+    }
+
+    &_lower {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+    }
+
+    &_item {
+        background: $primary-color !important;
+        min-width: 1vh !important;
+      /*   min-height: 93vh !important; */
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 16vh;
+        display: grid;
+        grid-template-columns: 1fr !important;
+        /* position: relative; */
+        border-image-repeat: repeat;
+        top: 8vh !important;
+        /* font-size: 90px; */
+    }
+}
