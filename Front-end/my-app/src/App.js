@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.css';
+// import './App.css';
 import { Navbar,Nav } from 'react-bootstrap';
 import SideNav, { NavItem, NavText } from '@trendmicro/react-sidenav';
 import '@trendmicro/react-sidenav/dist/react-sidenav.css';
@@ -66,52 +66,52 @@ class App extends React.Component{
             </ul>
           </Nav>
 
-          <div className="sidebar">
-            <SideNav 
-                    onSelect={(selected) => {
-                    }}
-              >
-              <SideNav.Nav defaultSelected="/">
-                  <NavItem eventKey="/">  
-                      
-                      <NavText>
-                      <img className="imgfeed" src={feed}/>
-                          <Link to="/">Feed</Link>
-                      </NavText>
-                  </NavItem>
-                  <NavItem eventKey="dashboard">  
-                      <NavText>
-                      <img className="imgdashboard" src={dashboard}/>
-                      <Link to="/Dashboard">Dashboard</Link>
-                      </NavText>
-                  </NavItem>
+    <div className="sidenav sidenav_upper sidebar">
+   <SideNav 
+          onSelect={(selected) => {
+          }}
+    >
+    <SideNav.Nav defaultSelected="/">
+        <NavItem className="sidenav_item" eventKey="/">  
+            
+            <NavText>
+            <img className="icon icon_feed imgfeed" src={feed}/>
+                <Link to="/">Feed</Link>
+            </NavText>
+        </NavItem>
+        <NavItem className="sidenav_item" eventKey="dashboard">  
+            <NavText>
+            <img className="icon icon_dashboard imgdashboard" src={dashboard}/>
+            <Link to="/Dashboard">Dashboard</Link>
+            </NavText>
+        </NavItem>
 
-                <div className="sidebar2">
-                        <SideNav.Nav onSelect="/">
-                        <NavItem eventKey="about">  
-                            <NavText>
-                            <img className="imgaboutus" src={aboutus}/>
-                            Over ons
-                            </NavText>
-                        </NavItem>  
-                        <NavItem eventKey="about">  
-                            <NavText>
-                            <img className="imgFAQ" src={FAQ}/>
-                              FAQ
-                            </NavText>
-                        </NavItem>  
-                        <NavItem eventKey="about">  
-                            <NavText>
-                            <img className="imgtandwiel" src={tandwiel}/>
-                              Instellingen
-                            </NavText>
-                        </NavItem>  
-                        </SideNav.Nav>
-                    </div>
-                  </SideNav.Nav>
-              </SideNav>
-          </div>
-          
+<div className="sidenav sidenav_lower sidebar2">
+        <SideNav.Nav onSelect="/">
+        <NavItem className="sidenav_item" eventKey="about">  
+            <NavText>
+            <img className="icon icon_about imgaboutus" src={aboutus}/>
+             Over ons
+            </NavText>
+        </NavItem>  
+        <NavItem  className="sidenav_item" eventKey="about">  
+            <NavText>
+            <img className="icon icon_faq imgFAQ" src={FAQ}/>
+              FAQ
+            </NavText>
+        </NavItem>  
+        <NavItem className="sidenav_item" eventKey="about">  
+            <NavText>
+            <img className="icon icon_settings imgtandwiel" src={tandwiel}/>
+              Instellingen
+            </NavText>
+        </NavItem>  
+        </SideNav.Nav>
+    </div>
+        </SideNav.Nav>
+    </SideNav>
+    </div>
+    
 
           <div className="container">
           <Switch>

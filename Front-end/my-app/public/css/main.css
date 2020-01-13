@@ -1,0 +1,51 @@
+.icon {
+  width: 1.7vw;
+  margin: 5px;
+}
+.icon_faq {
+  width: 1.8vw;
+}
+
+.secondary_navbar {
+  font-family: "comic sans";
+}
+.secondary_navbar_item {
+  display: inline;
+}
+.secondary_navbar_icon {
+  height: 30px;
+}
+
+.sidenav_lower {
+  position: fixed;
+}
+.sidenav_item {
+  background: #270F27 !important;
+  min-width: 1vh !important;
+  /*   min-height: 93vh !important; */
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 16vh;
+  display: grid;
+  grid-template-columns: 1fr !important;
+  /* position: relative; */
+  border-image-repeat: repeat;
+  top: 8vh !important;
+  /* font-size: 90px; */
+}
+
+.App-logo {
+  height: 40vmin;
+}
+.App-header {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: #fff;
+}
+
+/*# sourceMappingURL=main.css.map */
