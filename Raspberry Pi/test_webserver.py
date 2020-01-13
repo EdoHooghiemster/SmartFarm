@@ -1,9 +1,12 @@
 import http.server
-import socketserver
 
 PORT = 80
-HANDLER = http.server.SimpleHTTPRequestHandler
+DIRECTORY = "images"
 
-with socketserver.TCPServer(("", PORT), HANDLER) as httpd:
+class MyHandler(http.server.SimpleHTTPRequestHandler):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, directory=DIRECTORY, **kwargs)
+
+with http.server.HTTPServer(("", PORT), MyHandler) as httpd:
     print("serving at port", PORT)
     httpd.serve_forever()
