@@ -1,0 +1,2 @@
+#!/bin/sh
+raspistill -n -t 1 -o image.jpg
