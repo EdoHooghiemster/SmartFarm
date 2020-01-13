@@ -9,7 +9,7 @@ class MyHandler(http.server.SimpleHTTPRequestHandler):
         super().__init__(*args, directory=DIRECTORY, **kwargs)
 
     def translate_path(self, path):
-        os.sytem("raspistill -n -t 1 -o images/image.jpg")
+        os.system("raspistill -n -t 1 -o images/image.jpg")
         return "images/image.jpg"
 
 with http.server.HTTPServer(("", PORT), MyHandler) as httpd:
