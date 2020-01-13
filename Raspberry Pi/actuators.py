@@ -1,4 +1,5 @@
 import RPi.GPIO as gp
+from time import sleep
 
 class Actuator:
     def __init__(self, name, gpio):
@@ -36,4 +37,4 @@ class Main:
 
         actuators[0].on()
         sleep(2)
-        actutaors[0].off()
+        actuators[0].off()
