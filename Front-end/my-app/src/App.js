@@ -48,85 +48,85 @@ class App extends React.Component{
   } else {
     return (
       <Router>
-           <div className="App">
-    <Nav className="navbar bg">
-    <Navbar className=" navbar justify-content-center"  variant="dark" >
-      
-    <Navbar.Brand href="#home" style={{position:"center"}}>Smart Farm</Navbar.Brand>
-    </Navbar>
-    <ul class="secondary_navbar">
-      <li class="secondary_navbar_item">
-         {/* <img className="profileicon justify-content-end" src={profileicon}/> */}
-         <img className="imgprofileicon" src={profileicon}/>
-      </li>
-      <li class="secondary_navbar_item">
-        {/* <img className="imgarrowwhite justify-content-end" src={arrowwhite}/> */}
-        <img className="imgarrowwhite" src={arrowwhite}/>
-      </li>
-    </ul>
-    </Nav>
+        <div className="App">
+          <Nav className="navbar bg">
+            <Navbar className=" navbar justify-content-center"  variant="dark" >
+              
+            <Navbar.Brand href="#home" style={{ position:"center" }}>Smart Farm</Navbar.Brand>
+            </Navbar>
+            <ul class="secondary_navbar">
+              <li class="secondary_navbar_item">
+                {/* <img className="profileicon justify-content-end" src={profileicon}/> */}
+                <img className="imgprofileicon" src={profileicon}/>
+              </li>
+              <li class="secondary_navbar_item">
+                {/* <img className="imgarrowwhite justify-content-end" src={arrowwhite}/> */}
+                <img className="imgarrowwhite" src={arrowwhite}/>
+              </li>
+            </ul>
+          </Nav>
 
-    <div className="sidebar">
-   <SideNav 
-          onSelect={(selected) => {
-          }}
-    >
-    <SideNav.Nav defaultSelected="/">
-        <NavItem eventKey="/">  
-            
-            <NavText>
-            <img className="imgfeed" src={feed}/>
-                <Link to="/">Feed</Link>
-            </NavText>
-        </NavItem>
-        <NavItem eventKey="dashboard">  
-            <NavText>
-            <img className="imgdashboard" src={dashboard}/>
-            <Link to="/Dashboard">Dashboard</Link>
-            </NavText>
-        </NavItem>
+          <div className="sidebar">
+            <SideNav 
+                    onSelect={(selected) => {
+                    }}
+              >
+              <SideNav.Nav defaultSelected="/">
+                  <NavItem eventKey="/">  
+                      
+                      <NavText>
+                      <img className="imgfeed" src={feed}/>
+                          <Link to="/">Feed</Link>
+                      </NavText>
+                  </NavItem>
+                  <NavItem eventKey="dashboard">  
+                      <NavText>
+                      <img className="imgdashboard" src={dashboard}/>
+                      <Link to="/Dashboard">Dashboard</Link>
+                      </NavText>
+                  </NavItem>
 
-<div className="sidebar2">
-        <SideNav.Nav onSelect="/">
-        <NavItem eventKey="about">  
-            <NavText>
-            <img className="imgaboutus" src={aboutus}/>
-             Over ons
-            </NavText>
-        </NavItem>  
-        <NavItem eventKey="about">  
-            <NavText>
-            <img className="imgFAQ" src={FAQ}/>
-              FAQ
-            </NavText>
-        </NavItem>  
-        <NavItem eventKey="about">  
-            <NavText>
-            <img className="imgtandwiel" src={tandwiel}/>
-              Instellingen
-            </NavText>
-        </NavItem>  
-        </SideNav.Nav>
-    </div>
-        </SideNav.Nav>
-    </SideNav>
-    </div>
-    
+                <div className="sidebar2">
+                        <SideNav.Nav onSelect="/">
+                        <NavItem eventKey="about">  
+                            <NavText>
+                            <img className="imgaboutus" src={aboutus}/>
+                            Over ons
+                            </NavText>
+                        </NavItem>  
+                        <NavItem eventKey="about">  
+                            <NavText>
+                            <img className="imgFAQ" src={FAQ}/>
+                              FAQ
+                            </NavText>
+                        </NavItem>  
+                        <NavItem eventKey="about">  
+                            <NavText>
+                            <img className="imgtandwiel" src={tandwiel}/>
+                              Instellingen
+                            </NavText>
+                        </NavItem>  
+                        </SideNav.Nav>
+                    </div>
+                  </SideNav.Nav>
+              </SideNav>
+          </div>
+          
 
-    <div className="container">
-    <Switch>
-          <Route path="/Dashboard">
-            <Dashboard />
-          </Route>
-          <Route path="/">
-            <Feed />
-          </Route>
-          <Route path="/login">
-              <Login />
-            </Route>
-    </Switch>
-    </div>
-    </div>
+          <div className="container">
+          <Switch>
+                <Route path="/Dashboard">
+                  <Dashboard />
+                </Route>
+                <Route path="/">
+                  <Feed />
+                </Route>
+                <Route path="/login">
+                    <Login />
+                  </Route>
+          </Switch>
+          </div>
+        </div>
       </Router>
 
     );
