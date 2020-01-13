@@ -1,39 +1,138 @@
 import React, { Component } from 'react'
-import {Card,Button} from 'react-bootstrap'
+import { Row, Card, Button, Container, Col } from 'react-bootstrap';
 import axios from 'axios';
+import '../planten.css';
+import { css } from "@emotion/core";
+import ClipLoader from "react-spinners/ClipLoader";
 
 //Home Pagina
 export class Feed extends Component {
-    getfunc = () => {
-        axios.get('https://us-central1-smartfarm-51bd8.cloudfunctions.net/api/allplants')
-        .then(function (response) {
-            // handle success
-            console.log(response);
-        })
-        .catch(function (error) {
-            // handle error
-            console.log(error);
-        })
-        .finally(function () {
-            // always executed
-        });
+    _isMounted = false;
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            plants: [],
+            loading: true
+        }
     }
+
+    getPlants = async () => {
+        try {
+          return await axios.get('https://europe-west1-smartbroeikas.cloudfunctions.net/api/getplants', 
+                                { 
+                                    params:{}, 
+                                    headers: { 'Authorization': localStorage.getItem('jwt token') } 
+                                })         
+        } catch (err) {
+            if(err === 'Error: Request failed with status code 403') {
+                alert('Auth token has expired or is invalid!');
+                this.redirect();
+           }
+        }
+    }
+
+    redirect = () => {
+        localStorage.clear();
+        window.location.href = "/login";
+    }
+
+    logPlants = async () => {
+        const plants = this.getPlants()
+          .then(response => {
+            if (response.data) {
+                let listTest = [];
+                response.data.map(function(item) {
+                    listTest.push(item);
+                })
+                this.setState({
+                    plants: listTest
+                })
+                if (this._isMounted) {
+                    this.setState({ loading: false })
+                }
+            }
+          })
+          .catch(error => {
+            alert(error);
+          })
+      }
+      
+      componentWillMount() {
+        this.logPlants()
+      }
+
+      componentDidMount() {
+        this._isMounted = true;
+        if( localStorage.getItem('jwt token') === null ){
+            this.redirect();
+        }
+      }
+
+      componentWillUnmount() {
+        this._isMounted = false;
+      }
+
     render() {
-        return (
-            <div>
-        <Card style={{ width: '18rem' }}>
-        <Card.Img variant="top" src="holder.js/100px180" />
-        <Card.Body>
-            <Card.Title>Feed</Card.Title>
-            <Card.Text>
-            Some quick example text to build on the card title and make up the bulk of
-            the card's content.
-            </Card.Text>
-            <Button onClick={this.getfunc()} variant="primary">Go somewhere</Button>
-        </Card.Body>
-        </Card>
-            </div>
-        )
+        const override = css`
+        display: block;
+        margin: 0 auto;
+        border-color: 4px solid #49184f;
+        position: fixed;
+        z-index: 999;
+        height: 150px;
+        width: 150px;
+        overflow: visible;
+        margin: auto;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        `;
+        
+        if( this.state.loading ) {
+            return(
+                <div>
+                    <ClipLoader
+                        css={override}
+                        size={150}
+                        color={"#49184f"}
+                        loading={this.state.loading}
+                    />
+                </div>  
+            )
+        }
+        else {
+            const plants = this.state.plants.map((item, index) => {
+                return (
+                    <div key={index}>
+                        <Col>
+                            <Card style={{ width: '18rem' }}>
+                                <img className="card-img-top" style={{ backgroundImage: 'url(' + 'placeholder-plant.jpg' + ')' }} alt="  " />
+                                <Card.Body>
+                                    <Card.Title>{item.body}</Card.Title>
+                                    <Card.Text>
+                                    {item.plantId}
+                                    </Card.Text>
+                                    <Button variant="primary btn-plant">Details</Button>
+                                </Card.Body>
+                            </Card> 
+                        </Col>
+                    </div>
+                )
+            })
+    
+            return ( 
+                <div>
+                    <Row>
+                        {plants}
+                    </Row>
+                </div>
+            )
+
+        }
+
     }
 }
 

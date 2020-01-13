@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
-import {Navbar,Nav} from 'react-bootstrap';
-import SideNav, { Toggle, NavItem, NavIcon, NavText } from '@trendmicro/react-sidenav';
+import { Navbar,Nav } from 'react-bootstrap';
+import SideNav, { NavItem, NavText } from '@trendmicro/react-sidenav';
 import '@trendmicro/react-sidenav/dist/react-sidenav.css';
 import {
   BrowserRouter as Router,
@@ -13,6 +13,8 @@ import {
 import Dashboard from './components/Dashboard';
 import Feed from './components/Feed';
 import Users from './components/Users';
+import Login from './components/Login';
+import Register from './components/Register';
 import tandwiel from './tandwiel.svg';
 import FAQ from './FAQ.svg';
 import dashboard from './dashboard.svg';
@@ -29,13 +31,24 @@ class App extends React.Component{
   handleRoute = () => {
     return <Redirect to="/"/>
   }
-  
-  render (){
-  return (
-    <Router>
 
+  redirect = () => {
+    localStorage.clear();
+    window.location.href = "/login";
+  }
 
-    <div className="App">
+  render(){
+    if( window.location.pathname === '/login' ||  window.location.pathname === '/register') {
+      return(
+        <div className="center">
+          <Route exact path="/login" component={Login} />
+          <Route exact path="/register" component={Register} />
+        </div>
+      );
+  } else {
+    return (
+      <Router>
+           <div className="App">
     <Nav className="navbar bg">
     <Navbar className=" navbar justify-content-center"  variant="dark" >
       
@@ -53,13 +66,11 @@ class App extends React.Component{
     </ul>
     </Nav>
 
-<div className="sidebar">
+    <div className="sidebar">
    <SideNav 
           onSelect={(selected) => {
           }}
     >
-     {/*  <br></br>
-      <br></br> */}
     <SideNav.Nav defaultSelected="/">
         <NavItem eventKey="/">  
             
@@ -110,12 +121,17 @@ class App extends React.Component{
           <Route path="/">
             <Feed />
           </Route>
+          <Route path="/login">
+              <Login />
+            </Route>
     </Switch>
     </div>
     </div>
-    </Router>
-  );
-}
-}
+      </Router>
 
+    );
+
+    }
+  }
+}
 export default App;
