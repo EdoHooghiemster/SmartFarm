@@ -87,7 +87,7 @@ exports.commentOnPlant = (req, res) => {
             res.json(newComment);
         })
         .catch(err => {
-            return res.status(500).json({error: 'something went wrong'})
+            return res.status(500).json({error: 'something went wrong' + err})
         })
 }
 
@@ -175,3 +175,5 @@ exports.unlikePlant = (req,res) => {
             res.status(500).json({error: err.code})
         })
 }
+
+

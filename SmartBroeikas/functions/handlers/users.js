@@ -118,6 +118,7 @@ exports.getUser = (req, res) => {
                 return db.collection('plants').where('userHandle', '==', req.user.handle).get();
             })
             .then(doc =>{
+                Data.PlantId = doc.id
                 Data.Planten = [];
                 doc.forEach(data => {
                     Data.Planten.push(data.data())

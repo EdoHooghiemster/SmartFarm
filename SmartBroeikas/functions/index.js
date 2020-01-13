@@ -5,7 +5,7 @@ const FBAuth = require('./utilities/FBAuth')
 
 const {getPlants, createPlant, getPlant, commentOnPlant, likePlant, unlikePlant} = require('./handlers/plants')
 const {signUp, Login, signUp2, getUser} = require('./handlers/users')
-const {linkSmartFarm, linkDock, getVar} = require('./handlers/smartFarm')
+const {linkSmartFarm, linkDock, getVar, broeikasSettings} = require('./handlers/smartFarm')
 
 const cors = require('cors')
 
@@ -27,6 +27,7 @@ app.get('/details', FBAuth, getUser)
 //farm func
 app.post('/linkfarm', FBAuth, linkSmartFarm)
 app.post('/dock/:plantId/:dockNumber/:smartFarmId',FBAuth, linkDock)
+app.post('/setsettings/:smartFarmId', broeikasSettings)
 
 //test func
 app.get('/getvar', getVar)

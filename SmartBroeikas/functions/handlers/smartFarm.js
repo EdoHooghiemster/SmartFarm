@@ -5,6 +5,7 @@ exports.linkSmartFarm = (req,res) => {
         Temprature : 0,
         Humidity: 0,
         LedColor: null,
+        Water: null,
         userHandle : req.user.handle,
         dock1 : 0,
         dock2 : 0,
@@ -21,7 +22,7 @@ exports.linkSmartFarm = (req,res) => {
         res.json({message: 'smartfarm linked' ,docu: doc.get()})
     })
     .catch((err) => {
-        res.status(500).json({ error: 'something went wrong oopsie'})
+        res.status(500).json({ error: 'something went wrong'})
         console.log(err)
     })
 
@@ -62,6 +63,23 @@ exports.linkDock = (req,res) =>
    
 }
 
+exports.broeikasSettings = (req,res) => {
+    let settings = {
+        ledColor: req.body.ledColor,
+        water: req.body.waterDose
+    }
+
+    db
+    .collection('broeikassen')
+    .doc(req.params.smartFarmId)
+    .update(settings)
+        .then(doc => {
+            return res.json({message:"message updated", res: doc})
+        })
+        .catch(err => {
+            return res.status(500).json({message: 'something went wrong', res: err})
+        })
+}
 
 exports.getVar = (req,res) => {
     db.collection('broeikassen').doc('JYRUfG7fNGNIANd4AE6u').get()
