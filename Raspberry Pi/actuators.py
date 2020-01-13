@@ -8,7 +8,7 @@ class Actuator:
         gp.setmode(gp.BCM)
         gp.setup(gpio, gp.OUT)
 
-    def set(self. value):
+    def set(self, value):
         self.value = value
 	    gp.output(self.gpio, gp.HIGH)
 
