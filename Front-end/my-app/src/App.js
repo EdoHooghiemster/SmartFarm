@@ -1,5 +1,5 @@
 import React from 'react';
-// import './App.css';
+import './App.css';
 import { Navbar,Nav } from 'react-bootstrap';
 import SideNav, { NavItem, NavText } from '@trendmicro/react-sidenav';
 import '@trendmicro/react-sidenav/dist/react-sidenav.css';
@@ -57,17 +57,18 @@ class App extends React.Component{
     <ul class="secondary_navbar">
       <li class="secondary_navbar_item">
          {/* <img className="profileicon justify-content-end" src={profileicon}/> */}
-         <img className="imgprofileicon" src={profileicon}/>
+         <img className="icon icon_profile imgprofileicon" src={profileicon}/>
       </li>
       <li class="secondary_navbar_item">
         {/* <img className="imgarrowwhite justify-content-end" src={arrowwhite}/> */}
-        <img className="imgarrowwhite" src={arrowwhite}/>
+        <img className="icon icon_arrow imgarrowwhite" src={arrowwhite}/>
       </li>
     </ul>
     </Nav>
 
     <div className="sidenav sidenav_upper sidebar">
    <SideNav 
+          className="sidenav"
           onSelect={(selected) => {
           }}
     >

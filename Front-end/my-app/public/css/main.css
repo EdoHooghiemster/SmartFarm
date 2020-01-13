@@ -5,6 +5,23 @@
 .icon_faq {
   width: 1.8vw;
 }
+.navbar {
+  line-height: 0px;
+  padding: 0rem 0.3rem !important;
+  margin-bottom: 8px;
+}
+.navbar-brand {
+  font-size: 3.8vh !important;
+  font-family: good times;
+}
+
+.bg {
+  background-color: #270F27;
+  background-image: url("./vaporwave2.jpg");
+  background-size: 100%;
+  height: 8vh;
+  background-position-y: 12vh;
+}
 
 .secondary_navbar {
   font-family: "comic sans";
@@ -16,8 +33,13 @@
   height: 30px;
 }
 
+.sidenav {
+  background: #270F27 !important;
+}
 .sidenav_lower {
   position: fixed;
+  bottom: 0;
+  left: 0;
 }
 .sidenav_item {
   background: #270F27 !important;
@@ -34,7 +56,15 @@
   top: 8vh !important;
   /* font-size: 90px; */
 }
+.sidenav---collapsed---LQDEv {
+  position: relative;
+  top: 40px !important;
+}
 
+/* 
+.SideNav1 {
+    background: $primary-color !important;
+} */
 .App-logo {
   height: 40vmin;
 }
