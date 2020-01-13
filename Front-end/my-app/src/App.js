@@ -10,11 +10,21 @@ import {
   Link,
   Redirect
 } from "react-router-dom";
-import Planten from './components/Planten';
-import Users from './components/Users';
 import Dashboard from './components/Dashboard';
+import Feed from './components/Feed';
+import Users from './components/Users';
 import Login from './components/Login';
 import Register from './components/Register';
+import tandwiel from './tandwiel.svg';
+import FAQ from './FAQ.svg';
+import dashboard from './dashboard.svg';
+import feed from './feed.svg';
+import arrowwhite from './arrowwhite.svg';
+import profileicon from './profileicon.png';
+import arrowblack from './arrowblack.svg';
+import aboutus from './aboutus.svg';
+import vaporwave from './vaporwave.svg'
+import vaporwave2 from './vaporwave2.jpg'
 
 class App extends React.Component{
   
@@ -27,13 +37,10 @@ class App extends React.Component{
     window.location.href = "/login";
   }
 
-  render (){
-    console.log('appjs');
-
+  render(){
     if( window.location.pathname === '/login' ||  window.location.pathname === '/register') {
       return(
         <div className="center">
-          {/* <Login /> */}
           <Route exact path="/login" component={Login} />
           <Route exact path="/register" component={Register} />
         </div>
@@ -41,72 +48,90 @@ class App extends React.Component{
   } else {
     return (
       <Router>
-      <div className="App">
-      <Nav style={{backgroundColor: '#49184F'}} className="justify-content-center">
-      <Navbar  variant="dark" >
-      <Navbar.Brand href="#home" style={{position:"center"}}>Smart Farm</Navbar.Brand>
-      </Navbar>
-      </Nav>
-  
-      <SideNav style={{backgroundColor:"#270F27"}}
-            onSelect={(selected) => {
-            }}
-      >
-  
-      <SideNav.Nav defaultSelected="/">
-          <NavItem eventKey="/">  
-              <NavText>
-                  <Link to="/">Dashboard</Link>
-              </NavText>
-          </NavItem>
-          <NavItem eventKey="about">  
-              <NavText>
-              <Link to="/planten">Planten</Link>
-              </NavText>
-          </NavItem>
-          <NavItem eventKey="feed">  
-              <NavText>
-              <Link to="/feed">Feed</Link>
-              </NavText>
-          </NavItem>          
-          <NavItem eventKey="users">  
-              <NavText>
-                  <Link to="/users">Users</Link> 
-              </NavText>
-          </NavItem>
-          <NavItem eventKey="login">  
-              <NavText>
-                  <Link to="/login">Login</Link> 
-              </NavText>             
-          </NavItem>  
-          <NavItem eventKey="register">
-              <NavText>
-                <Link to="/register">Registreer</Link> 
-              </NavText>   
-          </NavItem>   
-      </SideNav.Nav>
-      </SideNav>
+           <div className="App">
+    <Nav className="navbar bg">
+    <Navbar className=" navbar justify-content-center"  variant="dark" >
       
-      <Switch>
-            <Route path="/planten">
-              <Planten />
-            </Route>
-            <Route path="/users">
-              <Users />
-            </Route>
-            <Route path="/login">
+    <Navbar.Brand href="#home" style={{position:"center"}}>Smart Farm</Navbar.Brand>
+    </Navbar>
+    <ul class="secondary_navbar">
+      <li class="secondary_navbar_item">
+         {/* <img className="profileicon justify-content-end" src={profileicon}/> */}
+         <img className="imgprofileicon" src={profileicon}/>
+      </li>
+      <li class="secondary_navbar_item">
+        {/* <img className="imgarrowwhite justify-content-end" src={arrowwhite}/> */}
+        <img className="imgarrowwhite" src={arrowwhite}/>
+      </li>
+    </ul>
+    </Nav>
+
+    <div className="sidebar">
+   <SideNav 
+          onSelect={(selected) => {
+          }}
+    >
+    <SideNav.Nav defaultSelected="/">
+        <NavItem eventKey="/">  
+            
+            <NavText>
+            <img className="imgfeed" src={feed}/>
+                <Link to="/">Feed</Link>
+            </NavText>
+        </NavItem>
+        <NavItem eventKey="dashboard">  
+            <NavText>
+            <img className="imgdashboard" src={dashboard}/>
+            <Link to="/Dashboard">Dashboard</Link>
+            </NavText>
+        </NavItem>
+
+<div className="sidebar2">
+        <SideNav.Nav onSelect="/">
+        <NavItem eventKey="about">  
+            <NavText>
+            <img className="imgaboutus" src={aboutus}/>
+             Over ons
+            </NavText>
+        </NavItem>  
+        <NavItem eventKey="about">  
+            <NavText>
+            <img className="imgFAQ" src={FAQ}/>
+              FAQ
+            </NavText>
+        </NavItem>  
+        <NavItem eventKey="about">  
+            <NavText>
+            <img className="imgtandwiel" src={tandwiel}/>
+              Instellingen
+            </NavText>
+        </NavItem>  
+        </SideNav.Nav>
+    </div>
+        </SideNav.Nav>
+    </SideNav>
+    </div>
+    
+
+    <div className="container">
+    <Switch>
+          <Route path="/Dashboard">
+            <Dashboard />
+          </Route>
+          <Route path="/">
+            <Feed />
+          </Route>
+          <Route path="/login">
               <Login />
             </Route>
-            <Route path="/">
-              <Dashboard />
-            </Route>
-      </Switch>
-  
-      </div>
+    </Switch>
+    </div>
+    </div>
       </Router>
+
     );
+
+    }
   }
 }
-}
-
 export default App;

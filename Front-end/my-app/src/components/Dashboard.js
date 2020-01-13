@@ -1,10 +1,12 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
+import { Row, Card, Button, Container, Col } from 'react-bootstrap';
 import axios from 'axios';
-import { UserDetails } from './UserDetails';
+import '../planten.css';
 import { css } from "@emotion/core";
 import ClipLoader from "react-spinners/ClipLoader";
+import { UserDetails } from './UserDetails';
 
-//Home Pagina
+//Planten Pagina
 export class Dashboard extends Component {
 
     constructor(props) {
@@ -62,24 +64,78 @@ export class Dashboard extends Component {
             right: 0;
         `;
 
-        return(
-            this.state.loading ? <div>{
+        if( this.state.loading ) {
+            return(
+                this.state.loading ? <div>{
+                    <div>
+                        <ClipLoader
+                            css={override}
+                            size={150}
+                            color={"#49184f"}
+                            loading={this.state.loading}
+                        />
+                    </div>
+                   
+                } </div>
+                       : <div className="container">
+                       {this.state.logged_in}
+                       <UserDetails userData = { this.state } />
+                   </div>
+            );
+        } else {
+            return(
                 <div>
-                    <ClipLoader
-                        css={override}
-                        size={150}
-                        color={"#49184f"}
-                        loading={this.state.loading}
-                    />
+                    <UserDetails userData = { this.state } />
+                    <Container style = {{ marginLeft : 70}} >
+                    <Row>
+                            <Col>
+                                <div className="dock-box-outer available">
+                                    <div className="dock-box-inner">
+                                        <div className="dock-title">
+                                            <h4>Dock 0</h4>
+                                        </div>
+                                        <div className="dock-description">Dock is beschikbaar</div>
+                                        <div className="dock-available">Vrij</div>
+                                        <div className="dock-button">
+                                            <a href="#">Details</a>
+                                        </div>                                    
+                                    </div>
+                                </div>
+                            </Col>
+                            <Col>
+                                <div className="dock-box-outer taken">
+                                    <div className="dock-box-inner">
+                                        <div className="dock-title">
+                                            <h4>Dock 1</h4>
+                                        </div>
+                                        <div className="dock-description">Tomatenplant</div>
+                                        <div className="dock-available">In gebruik</div>
+                                        <div className="dock-button">
+                                            <a href="#">Details</a>
+                                        </div>                                   
+                                    </div>
+                                </div>
+                            </Col>
+                            <Col>
+                                <div className="dock-box-outer taken">
+                                    <div className="dock-box-inner">
+                                        <div className="dock-title">
+                                            <h4>Dock 2</h4>
+                                        </div>
+                                        <div className="dock-description">Rucola</div>
+                                        <div className="dock-available">In gebruik</div>
+                                        <div className="dock-button">
+                                            <a href="#">Details</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </Col>
+                        </Row>
+                    </Container>
+        
                 </div>
-               
-            } </div>
-                   : <div className="container">
-                   {this.state.logged_in}
-                   <UserDetails userData = { this.state } />
-               </div>
-        );
-
+                );
+        }       
     }
 }
 
