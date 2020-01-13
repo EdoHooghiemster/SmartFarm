@@ -11,7 +11,7 @@ class Actuator:
 
     def set(self, value):
         self.value = value
-        gp.output(self.gpio, gp.HIGH)
+        gp.output(self.gpio, value)
 
     def on(self):
         self.set(gp.HIGH)
