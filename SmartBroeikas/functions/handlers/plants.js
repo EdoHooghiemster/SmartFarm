@@ -53,6 +53,7 @@ exports.createPlant = (req, res) => {
         userHandle: req.user.handle,
         createdAt: new Date().toISOString(),
         likeCount: 0,
+        soilMoisture: 0
     }
     db
     .collection('plants')
@@ -72,7 +73,7 @@ exports.commentOnPlant = (req, res) => {
     if (req.body.body.trim() === '') return res.status(400).json({error: 'must not be empty'})
     const newComment = {
         body: req.body.body,
-        createdAt : new Date().toISOString(),
+        createdAt : new Date().toString(),
         plantId: req.params.plantId,
         userHandle: req.user.handle,
     }
@@ -176,4 +177,48 @@ exports.unlikePlant = (req,res) => {
         })
 }
 
+exports.plantStamp = (req,res) => {
+   
+    const plantStamp = {
+        TimeStamp : null,
+        body : "",
+        plantId: ""
+    }
+    
+    db.doc(`/plants/${req.params.plantId}`).get()
+        .then(doc => {
+            if(!doc.exists){
+                return res.status(404).json({error: "plant not found"})
+            }
+            else{
+            plantStamp.TimeStamp = new Date().toString()
+            plantStamp.body = doc.data().body
+            plantStamp.plantId = doc.id
+            db.collection('TimeStamp').add(plantStamp)
+                .then(doc => {
+                    return res.json(plantStamp)
+                }).catch((err) => {
+                    return res.status(500).json({error: err, plantStamp})
+                })
+            }
+        }).catch((err) => {
+            return res.status(500).json({error: err, plantStamp})
+        })
+}
 
+exports.plantSettings = (req,res) => {
+    let settings = {
+        soilMoisture: req.body.soilMoisture, 
+    }
+
+    db
+    .collection('plants')
+    .doc(req.params.plantId)
+    .update(settings)
+        .then(doc => {
+            return res.json({message:"sensor data updated", res: doc})
+        })
+        .catch(err => {
+            return res.status(500).json({message: 'something went wrong', res: err})
+        })
+}
