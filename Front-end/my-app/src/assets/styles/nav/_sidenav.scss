@@ -1,5 +1,7 @@
 .sidenav {
 
+    background: $primary-color !important;
+    
     &_upper {
 
     }
@@ -25,4 +27,15 @@
         top: 8vh !important;
         /* font-size: 90px; */
     }
+
+    &---collapsed---LQDEv{
+        position: relative;
+        top: 40px !important;
+    }
+
 }
+
+/* 
+.SideNav1 {
+    background: $primary-color !important;
+} */
