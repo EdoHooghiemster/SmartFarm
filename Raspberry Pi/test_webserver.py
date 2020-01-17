@@ -1,17 +1,9 @@
 import http.server
-import os
+import socketserver
 
-PORT = 8080
-DIRECTORY = "images"
+PORT = 80
+HANDLER = http.server.SimpleHTTPRequestHandler
 
-class MyHandler(http.server.SimpleHTTPRequestHandler):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, directory=DIRECTORY, **kwargs)
-
-    def translate_path(self, path):
-        os.system("raspistill -n -t 1 -o images/image.jpg")
-        return "images/image.jpg"
-
-with http.server.HTTPServer(("", PORT), MyHandler) as httpd:
+with socketserver.TCPServer(("", PORT), HANDLER) as httpd:
     print("serving at port", PORT)
     httpd.serve_forever()
