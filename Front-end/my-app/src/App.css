@@ -1,3 +1,8 @@
+@font-face {
+  font-family: good_times; 
+  src: url("./good_times_rg.ttf") format("tff");
+}
+
 .App {
   /*   text-align: center; */
     
@@ -104,7 +109,7 @@
   }
   
   
-  .navbar-brand{ /*smarfarm title*/
+  .navbar-brand{ /*smarfarm title */
     font-size: 3.8vh !important;
     font-family: good times; 
   }
