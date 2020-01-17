@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.css';
+// import './App.css';
 import { Navbar,Nav } from 'react-bootstrap';
 import SideNav, { NavItem, NavText } from '@trendmicro/react-sidenav';
 import '@trendmicro/react-sidenav/dist/react-sidenav.css';
@@ -10,22 +10,22 @@ import {
   Link,
   Redirect
 } from "react-router-dom";
+import './assets/styles/main.scss';
 import Dashboard from './components/Dashboard';
 import Feed from './components/Feed';
 import Users from './components/Users';
 import Login from './components/Login';
 import Register from './components/Register';
-import tandwiel from './tandwiel.svg';
-import FAQ from './FAQ.svg';
-import dashboard from './dashboard.svg';
-import feed from './feed.svg';
-import arrowwhite from './arrowwhite.svg';
-import profileicon from './profileicon.png';
-import arrowblack from './arrowblack.svg';
-import aboutus from './aboutus.svg';
-import vaporwave from './vaporwave.svg'
-import vaporwave2 from './vaporwave2.jpg'
-
+import tandwiel from './assets/svg/tandwiel.svg';
+import FAQ from './assets/svg/FAQ.svg';
+import dashboard from './assets/svg/dashboard.svg';
+import feed from './assets/svg/feed.svg';
+import arrowwhite from './assets/svg/arrowwhite.svg';
+import profileicon from './assets/images/profileicon.png';
+import arrowblack from './assets/svg/arrowblack.svg';
+import aboutus from './assets/svg/aboutus.svg';
+import vaporwave from './assets/svg/vaporwave.svg';
+import vaporwave2 from './assets/images/vaporwave2.jpg';
 class App extends React.Component{
   
   handleRoute = () => {
@@ -49,11 +49,13 @@ class App extends React.Component{
     return (
       <Router>
            <div className="App">
-    <Nav className="navbar bg">
-    <Navbar className=" navbar justify-content-center"  variant="dark" >
+    {/* <Nav className="navbar bg"> */}
+    <Nav className="header">
+    <Navbar className=" navbar"  variant="dark" >
+    {/* <Navbar className=" navbar justify-content-center"  variant="dark" > */}
       
-    <Navbar.Brand href="#home" style={{position:"center"}}>Smart Farm</Navbar.Brand>
-    </Navbar>
+    {/* <Navbar.Brand href="#home" style={{position:"center"}}>Smart Farm</Navbar.Brand> */}
+    <Navbar.Brand href="#home">Smart Farm</Navbar.Brand>
     <ul class="secondary_navbar">
       <li class="secondary_navbar_item">
          {/* <img className="profileicon justify-content-end" src={profileicon}/> */}
@@ -64,6 +66,7 @@ class App extends React.Component{
         <img className="icon icon_arrow imgarrowwhite" src={arrowwhite}/>
       </li>
     </ul>
+    </Navbar>
     </Nav>
 
     <div className="sidenav sidenav_upper sidebar">
