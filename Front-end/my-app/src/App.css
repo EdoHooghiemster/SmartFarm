@@ -1,3 +1,10 @@
+/* @font-face {
+  font-family: 'Good Times';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Good Times'), url(./assets/fonts/good-times-rg.ttf)format('truetype');
+} */
+
 .App {
   /*   text-align: center; */
     
@@ -93,7 +100,7 @@
   }
   
   .bg{
-    background-image: url("./vaporwave2.jpg");
+    /* background-image: url("./vaporwave2.jpg"); */
     background-size: 100%;
     height: 8vh;
     background-position-y: 12vh;
@@ -106,7 +113,7 @@
   
   .navbar-brand{ /*smarfarm title*/
     font-size: 3.8vh !important;
-    font-family: good times; 
+    font-family: 'Good Times'; 
   }
   
   .sidebar2{ /*3 onderste gedeeltes*/

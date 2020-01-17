@@ -6,7 +6,6 @@ import { css } from "@emotion/core";
 import ClipLoader from "react-spinners/ClipLoader";
 import { UserDetails } from './UserDetails';
 
-//Planten Pagina
 export class Dashboard extends Component {
 
     constructor(props) {
@@ -18,26 +17,28 @@ export class Dashboard extends Component {
     }
 
     componentDidMount = () => {
-        const header = localStorage.getItem('jwt token')
+        const header = localStorage.getItem( 'jwt token' )
 
-        if( localStorage.getItem('jwt token') === null ){
+        if( localStorage.getItem( 'jwt token' ) === null ){
             this.redirect();
         }
 
-        axios.get('https://europe-west1-smartbroeikas.cloudfunctions.net/api/details', {headers: {Authorization:header}})
-            .then(res => {
+        axios.get( 'https://europe-west1-smartbroeikas.cloudfunctions.net/api/details', { headers: { Authorization:header } } )
+            .then( res => {
                 this.setState({
-                        test:      res.data.credentials.userId,
+                        userId:    res.data.credentials.userId,
                         name:      res.data.credentials.email,
                         bio:       res.data.credentials.bio,
                         location:  res.data.credentials.location,
                         logged_in: true,
-                        loading: false
+                        loading:   false
                 })
-            })         
-            .catch((err) => {
-                if(err == 'Error: Request failed with status code 403'){
+            })
+            .catch(( err ) => {
+                if( err == 'Error: Request failed with status code 403' ){
                     this.redirect();
+                } else {
+                    alert( 'Something went wrong fetching user details... ' + err );
                 }
             });
     }
@@ -66,7 +67,7 @@ export class Dashboard extends Component {
 
         if( this.state.loading ) {
             return(
-                this.state.loading ? <div>{
+                this.state.loading ? <div> {
                     <div>
                         <ClipLoader
                             css={override}
@@ -77,17 +78,17 @@ export class Dashboard extends Component {
                     </div>
                    
                 } </div>
-                       : <div className="container">
-                       {this.state.logged_in}
+                : <div className="container">
+                       { this.state.logged_in }
                        <UserDetails userData = { this.state } />
-                   </div>
+                  </div>
             );
         } else {
             return(
                 <div>
                     <UserDetails userData = { this.state } />
                     <Container style = {{ marginLeft : 70}} >
-                    <Row>
+                        <Row>
                             <Col>
                                 <div className="dock-box-outer available">
                                     <div className="dock-box-inner">
@@ -134,7 +135,7 @@ export class Dashboard extends Component {
                     </Container>
         
                 </div>
-                );
+            );
         }       
     }
 }

@@ -26,10 +26,17 @@ export class Feed extends Component {
                                     headers: { 'Authorization': localStorage.getItem('jwt token') } 
                                 })         
         } catch (err) {
-            if(err === 'Error: Request failed with status code 403') {
-                alert('Auth token has expired or is invalid!');
+            if(err == 'Error: Request failed with status code 403') {
                 this.redirect();
+           } else {
+               alert('Something went wrong... ' + err);
            }
+        }
+    }
+
+    componentDidMount = () => {
+        if( localStorage.getItem('jwt token') === null ){
+            this.redirect();
         }
     }
 
@@ -122,14 +129,16 @@ export class Feed extends Component {
                     </div>
                 )
             })
-    
-            return ( 
-                <div>
-                    <Row>
-                        {plants}
-                    </Row>
-                </div>
-            )
+            
+            if( !this.state.loading ) {
+                return ( 
+                    <div>
+                        <Row>
+                            {plants}
+                        </Row>
+                    </div>
+                );
+            }
 
         }
 

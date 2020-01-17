@@ -14,6 +14,8 @@ class Register extends Component {
   }
 
   handleSubmit = (event) => {
+    this.refs.btn.setAttribute("disabled", "disabled");
+    this.setState({ loading: true });
     event.preventDefault();
 
     const email = event.target.elements.formRegisterEmail.value;
@@ -21,29 +23,41 @@ class Register extends Component {
     const confirmPassword = event.target.elements.formRegisterConfirmPassword.value;
     const handle = event.target.elements.formRegisterHandle.value;
 
-    if( password !== confirmPassword ) {
-        alert('Passwords do not match!');
-    } else {
+    if( password == confirmPassword ) {
+      if( password.length > 6 ) {
         axios.post("https://europe-west1-smartbroeikas.cloudfunctions.net/api/signup", {
-            email,
-            password,
-            confirmPassword,
-            handle
-          }).then(result => {
-            if (result.status === 201) {
-              alert('Uw account is aangemaakt!');
-              this.props.history.push('/login');
-              window.location.reload();
-            }
-          }).catch(e => {
-            if(e == 'Error: Request failed with status code 400'){
-              alert('Username of email bestaat al!');
-            } else {
-              alert('Er ging iets mis...');
-            }
-          });
+          email,
+          password,
+          confirmPassword,
+          handle
+        }).then(result => {
+          if (result.status === 201) {
+            alert('Uw account is aangemaakt!');
+            this.props.history.push('/login');
+            window.location.reload();
+          }
+        }).catch(e => {
+          if(e == 'Error: Request failed with status code 400'){
+            alert('Username of email bestaat al!');
+            this.resetButton();
+          } else {
+            alert('Er ging iets mis...');
+            this.resetButton();
+          }
+        });
+      } else {
+        alert( 'Password must be longer than 6 characters' );
+        this.resetButton();
+      }
+    } else {
+      alert( 'Passwords do not match' );
+      this.resetButton();
     }
+    this.setState({ loading: false });
+  }
 
+  resetButton() {
+    this.refs.btn.removeAttribute("disabled");
   }
 
   render() {
@@ -138,7 +152,7 @@ class Register extends Component {
                               />
                           </InputGroup>                      
                         </Form.Group>                        
-                        <Button onSubmit={this.handleSubmit} variant="primary btn-register" type="submit">
+                        <Button ref="btn" onSubmit={this.handleSubmit} variant="primary btn-register" type="submit">
                           Registreren
                         </Button>
                         <Button variant="primary btn-register-back" href="/login">
