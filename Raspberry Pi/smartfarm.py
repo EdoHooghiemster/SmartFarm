@@ -491,3 +491,4 @@ class Interface:
 
     def click(self, button, state, x, y):
         pass
+Main()
