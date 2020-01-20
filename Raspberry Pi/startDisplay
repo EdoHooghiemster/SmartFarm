@@ -3,4 +3,4 @@ export DISPLAY=:0.0
 killall zenity
 unclutter &
 cd ~/Documents/SmartFarm/Raspberry\ Pi/
-python3 interface.py
+python3 smartfarm.py

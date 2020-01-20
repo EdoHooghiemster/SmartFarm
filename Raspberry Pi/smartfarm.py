@@ -69,7 +69,7 @@ class TemperatureSensor(DigitalSensor):
     def __init__(self, name, unit):
         super().__init__(name, unit)
         self.sensor = DHT.DHT22
-	
+        
     def read(self):
         dummy, self.rawValue = DHT.read_retry(self.sensor, DHT_PIN)
         self.value = self.rawValue
@@ -157,7 +157,7 @@ class Main:
         self.turnOn("soilSensors")
         sleep(0.5)
         data = [s.read() for s in self.sensors]
-        self.turnOff("soilsensors")
+        self.turnOff("soilSensors")
         return data
 
     def reportSensors(self):
@@ -187,6 +187,28 @@ class Box:
         self.name = name
         self.soilHumidity = soilHumidity
         self.plantGrowth = plantGrowth
+        self.desiredHumidity = 50
+        
+    def checkWatering(self, main):
+        if self.soilHumidity < self.desiredHumidity:
+            if self.big:
+                if self.x == 0:
+                    main.rain(1)
+                    main.rain(2)
+                if self.x == 1:
+                    pass
+                if self.x == 2:
+                    main.rain(3)
+                    main.rain(4)
+            else:
+                if self.x == 0 and self.y == 0:
+                    main.rain(1)
+                if self.x == 0 and self.y == 1:
+                    main.rain(2)
+                if self.x == 2 and self.y == 0:
+                    main.rain(3)
+                if self.x == 2 and self.y == 1:
+                    main.rain(4)
 
 class Interface:
     def __init__(self, main):
@@ -194,6 +216,7 @@ class Interface:
         self.temp = 21.01234567
         self.hum = 65
         self.light = 30
+        self.lastHour = datetime.now().minute # change to hour
         self.boxes = []
         self.boxes.append(Box(0, 0, True, "Tomaat", 10, 30))
         self.boxes.append(Box(2, 0, False, "Tuinkers", 50, 60))
@@ -310,7 +333,7 @@ class Interface:
         self.drawText(45, WINDOW_HEIGHT - 18, str(round(self.temp, 1)) + "°C")
         self.drawText(135, WINDOW_HEIGHT - 18, str(round(self.hum)) + "%")
         self.drawText(205, WINDOW_HEIGHT - 18, str(round(self.light)) + " lux")
-        self.drawText(270, WINDOW_HEIGHT - 18, str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")))
+        self.drawText(300, WINDOW_HEIGHT - 18, str(datetime.now().strftime("%d/%m/%Y %H:%M")))
         glLineWidth(2)
         glBegin(GL_LINES)
         for i in range(1, 4):
@@ -340,7 +363,7 @@ class Interface:
         glVertex(0, 1.5, 0)
         glEnd()
 
-    def drawSoilHumidity(self, x, y, perc):
+    def drawSoilHumidity(self, x, y, perc, desired):
         glColor(0.5, 0.5, 1) # light blue
         glPolygonMode(GL_FRONT, GL_FILL)
         glPushMatrix()
@@ -354,6 +377,11 @@ class Interface:
         glDisable(GL_SCISSOR_TEST)
         glLineWidth(2)
         self.drawDropShape(True)
+        glColor(1, 0, 0) # red
+        glBegin(GL_LINES)
+        glVertex(-0.1, -0.1 + 0.041 * desired, 0)
+        glVertex(2.1, -0.1 + 0.041 * desired, 0)
+        glEnd()
         glColor(0, 0, 0) # black
         glScale(0.04, 0.04, 1)
         self.drawText(5, 10, str(round(perc)) + "%")
@@ -454,11 +482,11 @@ class Interface:
         glColor(1, 1, 0) # yellow
         if box.big:
             self.drawText(box.x * CELL_WIDTH + 20, box.y * CELL_HEIGHT + 265, box.name)
-            self.drawSoilHumidity(box.x * CELL_WIDTH + 65, box.y * CELL_HEIGHT + 150, box.soilHumidity)
+            self.drawSoilHumidity(box.x * CELL_WIDTH + 65, box.y * CELL_HEIGHT + 150, box.soilHumidity, box.desiredHumidity)
             self.drawPlantGrowth(box.x * CELL_WIDTH + 50, box.y * CELL_HEIGHT + 50, box.plantGrowth)
         else:
             self.drawText(box.x * CELL_WIDTH + 20, box.y * CELL_HEIGHT + 120, box.name)
-            self.drawSoilHumidity(box.x * CELL_WIDTH + 20, box.y * CELL_HEIGHT + 20, box.soilHumidity)
+            self.drawSoilHumidity(box.x * CELL_WIDTH + 20, box.y * CELL_HEIGHT + 20, box.soilHumidity, box.desiredHumidity)
             self.drawPlantGrowth(box.x * CELL_WIDTH + 80, box.y * CELL_HEIGHT + 30, box.plantGrowth)
 
     def drawBoxes(self):
@@ -480,15 +508,19 @@ class Interface:
 
     def update(self, var):
         data = self.main.readSensors()
+        thisHour = datetime.now().minute # change to hour
+        for i in range(len(self.boxes)):
+            self.boxes[i].soilHumidity = data[i]
+            if self.lastHour != thisHour:
+                self.boxes[i].checkWatering(self.main)
         self.light = data[3]
         self.temp = data[4]
         self.hum = data[5]
-        for i in self.boxes:
-            i.soilHumidity = (i.soilHumidity - 1) % 100
-            i.plantGrowth = (i.plantGrowth + 1) % 100
+        self.lastHour = thisHour
         glutPostRedisplay()
         glutTimerFunc(1000, self.update, 0)
 
     def click(self, button, state, x, y):
         pass
+        
 Main()
