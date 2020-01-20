@@ -160,8 +160,7 @@ class Main:
         self.turnOff("soilSensors")
         return data
 
-    def reportSensors(self):
-        data = self.readSensors()
+    def reportSensors(self, data):
         jsonData = {
             "lightIntensity" : data[3],
             "temperature": data[4],
@@ -169,15 +168,10 @@ class Main:
         }
         url = "https://europe-west1-smartbroeikas.cloudfunctions.net/api/sensordatabroeikas/EJxhMpFqwRPo2WAz1rx8"
         res = requests.post(url, data = jsonData)
-        if res.status_code != 200:
+        if res.status_code != 201:
             print("Error posting data")
         else:
             print(res.text)
-
-    def loop(self):
-        while (True):
-            self.reportSensors()
-            sleep(10)
 
 class Box:
     def __init__(self, x, y, big, name, soilHumidity, plantGrowth):
@@ -518,6 +512,7 @@ class Interface:
         self.hum = data[5]
         self.lastHour = thisHour
         glutPostRedisplay()
+        self.main.reportSensors(data)
         glutTimerFunc(1000, self.update, 0)
 
     def click(self, button, state, x, y):
