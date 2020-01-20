@@ -16,6 +16,7 @@ class Box:
         self.name = name
         self.soilHumidity = soilHumidity
         self.plantGrowth = plantGrowth
+        self.desiredHumidity = 50
 
 class Interface:
     def __init__(self):
@@ -28,9 +29,9 @@ class Interface:
         self.boxes.append(Box(2, 1, False, "Basilicum", 99, 90))
         glutInit()
         #glutInitDisplayMode(GLUT_MULTISAMPLE)
-        #glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT)
+        glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT)
         glutCreateWindow("SmartFarm".encode("ascii"))
-        glutFullScreen()
+        #glutFullScreen()
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
         glEnable(GL_BLEND)
         glEnable(GL_LINE_SMOOTH)
@@ -168,7 +169,7 @@ class Interface:
         glVertex(0, 1.5, 0)
         glEnd()
 
-    def drawSoilHumidity(self, x, y, perc):
+    def drawSoilHumidity(self, x, y, perc, desired):
         glColor(0.5, 0.5, 1) # light blue
         glPolygonMode(GL_FRONT, GL_FILL)
         glPushMatrix()
@@ -182,6 +183,11 @@ class Interface:
         glDisable(GL_SCISSOR_TEST)
         glLineWidth(2)
         self.drawDropShape(True)
+        glColor(1, 0, 0) # red
+        glBegin(GL_LINES)
+        glVertex(-0.1, -0.1 + 0.041 * desired, 0)
+        glVertex(2.1, -0.1 + 0.041 * desired, 0)
+        glEnd()
         glColor(0, 0, 0) # black
         glScale(0.04, 0.04, 1)
         self.drawText(5, 10, str(round(perc)) + "%")
@@ -282,11 +288,11 @@ class Interface:
         glColor(1, 1, 0) # yellow
         if box.big:
             self.drawText(box.x * CELL_WIDTH + 20, box.y * CELL_HEIGHT + 265, box.name)
-            self.drawSoilHumidity(box.x * CELL_WIDTH + 65, box.y * CELL_HEIGHT + 150, box.soilHumidity)
+            self.drawSoilHumidity(box.x * CELL_WIDTH + 65, box.y * CELL_HEIGHT + 150, box.soilHumidity, box.desiredHumidity)
             self.drawPlantGrowth(box.x * CELL_WIDTH + 50, box.y * CELL_HEIGHT + 50, box.plantGrowth)
         else:
             self.drawText(box.x * CELL_WIDTH + 20, box.y * CELL_HEIGHT + 120, box.name)
-            self.drawSoilHumidity(box.x * CELL_WIDTH + 20, box.y * CELL_HEIGHT + 20, box.soilHumidity)
+            self.drawSoilHumidity(box.x * CELL_WIDTH + 20, box.y * CELL_HEIGHT + 20, box.soilHumidity, box.desiredHumidity)
             self.drawPlantGrowth(box.x * CELL_WIDTH + 80, box.y * CELL_HEIGHT + 30, box.plantGrowth)
 
     def drawBoxes(self):

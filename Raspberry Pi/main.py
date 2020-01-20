@@ -86,7 +86,7 @@ class Main:
         }
         url = "https://europe-west1-smartbroeikas.cloudfunctions.net/api/sensordatabroeikas/EJxhMpFqwRPo2WAz1rx8"
         res = requests.post(url, data = jsonData)
-        if res.status_code != 200:
+        if res.status_code != 201:
             print("Error posting data")
         else:
             print(res.text)
