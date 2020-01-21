@@ -209,6 +209,7 @@ exports.plantStamp = (req,res) => {
 exports.plantSettings = (req,res) => {
     let settings = {
         soilMoisture: req.body.soilMoisture, 
+        growthPercentage: req.body.growthPercentage
     }
 
     db

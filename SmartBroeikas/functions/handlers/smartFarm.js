@@ -75,7 +75,6 @@ exports.getplantsdocked = (req, res) => {
 
 exports.broeikasSettings = (req,res) => {
     let settings = {
-        ledColor: req.body.ledColor,
         tempratuur: req.body.temperature,
         lightIntensiry: req.body.lightIntensity,
         luchtvochtigheid: req.body.humidity
