@@ -15,6 +15,7 @@ CELL_WIDTH = (WINDOW_WIDTH - 10) / 3
 CELL_HEIGHT = (WINDOW_HEIGHT - TITLE_HEIGHT - 10) / 2
 
 RAINTIME = 1.0
+URL = "https://europe-west1-smartbroeikas.cloudfunctions.net/api/"
 
 SPI_PORT = 0
 SPI_DEVICE = 0
@@ -166,9 +167,9 @@ class Main:
             "temperature": data[4],
             "humidity": data[5]
         }
-        url = "https://europe-west1-smartbroeikas.cloudfunctions.net/api/sensordatabroeikas/EJxhMpFqwRPo2WAz1rx8"
+        url = "sensordatabroeikas/EJxhMpFqwRPo2WAz1rx8"
         res = requests.post(url, data = jsonData)
-        if res.status_code != 201:
+        if res.status_code != 200:
             print("Error posting data")
         else:
             print(res.text)
@@ -203,6 +204,18 @@ class Box:
                     main.rain(3)
                 if self.x == 2 and self.y == 1:
                     main.rain(4)
+
+    def reportPlantData(self):
+        data = {
+	        "soilMoisture": self.soilHumidity,
+	        "growthPercentage": self.plantGrowth
+        }
+        url = URL + "sensordataplant/XtM0Z4mwmXoj1mH7IZ1E"
+        res = requests.post(url, data = data)
+        if res.status_code != 200:
+            print("Error posting data")
+        else:
+            print(res.text)
 
 class Interface:
     def __init__(self, main):
@@ -505,6 +518,7 @@ class Interface:
         thisHour = datetime.now().minute # change to hour
         for i in range(len(self.boxes)):
             self.boxes[i].soilHumidity = data[i]
+            self.boxes[i].reportPlantData()
             if self.lastHour != thisHour:
                 self.boxes[i].checkWatering(self.main)
         self.light = data[3]
