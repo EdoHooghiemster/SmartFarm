@@ -26,6 +26,8 @@ def makePicture():
     print(pictureFullName) 
     os.system("raspistill -n -t 1 -o pictures/"+ pictureFullName)
 
+if __name__ == "__main__":
+    tl.start(block=True)
 
 # def countPixels(img, region):
 #     box = img.crop(region) # selecteer regio
