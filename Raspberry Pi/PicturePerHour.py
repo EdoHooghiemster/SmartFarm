@@ -6,12 +6,12 @@ from datetime import timedelta
 from timeloop import Timeloop
 
 #variables
-now = datetime.now()
-today = date.today()
-currentTime = now.strftime("%H:%M:%S")
-currentDate = today.strftime("%Y-%m-%d")
-currentDateTime = currentDate + "_" + currentTime
-pictureFullName = "smartFarm_" + currentDateTime + ".jpg"
+# now = datetime.now()
+# today = date.today()
+# currentTime = now.strftime("%H:%M:%S")
+# currentDate = today.strftime("%Y-%m-%d")
+# currentDateTime = currentDate + "_" + currentTime
+# pictureFullName = "smartFarm_" + currentDateTime + ".jpg"
 tl = Timeloop()
 
 # print(pictureFullName) 
@@ -23,6 +23,12 @@ def monitorFarm():
 
 @tl.job(interval=timedelta(seconds=20))
 def makePicture():
+    now = datetime.now()
+    today = date.today()
+    currentTime = now.strftime("%H:%M:%S")
+    currentDate = today.strftime("%Y-%m-%d")
+    currentDateTime = currentDate + "_" + currentTime
+    pictureFullName = "smartFarm_" + currentDateTime + ".jpg"
     print("saving: " + pictureFullName + " | next pict in 20 seconds") 
     os.system("raspistill -n -t 1 -o pictures/"+ pictureFullName)
 
