@@ -25,7 +25,7 @@ print(pictureFullName)
 
 # def makePicture():
 #     raspistill -o $pictureName$currentDateTime.jpg
-# os.system("raspistill -n -t -o pictures/"+ pictureFullName +".jpg")
+os.system("raspistill -n -t -o pictures/"+ pictureFullName +".jpg")
 
 # def countPixels(img, region):
 #     box = img.crop(region) # selecteer regio
