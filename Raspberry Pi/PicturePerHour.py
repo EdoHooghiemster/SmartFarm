@@ -1,31 +1,31 @@
+import os
 from PIL import Image # voor plaatjes
 from datetime import date
 from datetime import datetime
-import os
+from datetime import timedelta
+from timeloop import Timeloop
 
-# img = Image.open('starry_night.jpg')
-
+#variables
 now = datetime.now()
 today = date.today()
-
 currentTime = now.strftime("%H:%M:%S")
-currentDate = today.strftime("%b-%d-%Y")
 currentDate = today.strftime("%Y-%m-%d")
-
-# print("Current date plus time", currentDate,currentTime)
-
 currentDateTime = currentDate + "_" + currentTime
-pictureName = "smartFarm"
 pictureFullName = "smartFarm_" + currentDateTime + ".jpg"
-print(pictureFullName) 
+tl = Timeloop()
 
-# img.save(pictureFullName)
-# f = open('%s.jpg' % pictureFullName, 'wb')
-# print(img)
+# print(pictureFullName) 
 
-# def makePicture():
-#     raspistill -o $pictureName$currentDateTime.jpg
-os.system("raspistill -n -t 1 -o pictures/"+ pictureFullName +".jpg")
+#async task loops
+@tl.job(interval=timedelta(seconds=10))
+def monitorFarm():
+    print("Monitor shizzle every 2 seconds")
+
+@tl.job(interval=timedelta(seconds=300))
+def makePicture():
+    print(pictureFullName) 
+    os.system("raspistill -n -t 1 -o pictures/"+ pictureFullName)
+
 
 # def countPixels(img, region):
 #     box = img.crop(region) # selecteer regio
