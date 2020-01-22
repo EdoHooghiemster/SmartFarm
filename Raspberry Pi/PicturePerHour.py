@@ -19,11 +19,11 @@ tl = Timeloop()
 #async task loops
 @tl.job(interval=timedelta(seconds=10))
 def monitorFarm():
-    print("Monitor shizzle every 2 seconds")
+    print("Monitor shizzle every 10 seconds")
 
-@tl.job(interval=timedelta(seconds=300))
+@tl.job(interval=timedelta(seconds=20))
 def makePicture():
-    print(pictureFullName) 
+    print("saving: " + pictureFullName + " | next pict in 20 seconds") 
     os.system("raspistill -n -t 1 -o pictures/"+ pictureFullName)
 
 if __name__ == "__main__":
