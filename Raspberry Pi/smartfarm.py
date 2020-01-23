@@ -135,8 +135,39 @@ class Main:
         a = Actuator("soilSensors", SOIL_PIN)
         self.actuators.append(a)
         self.lightOn = False
-        self.interface = Interface(self)
-    
+        boxes = self.login()
+        self.interface = Interface(self, boxes)
+
+    def login(self):
+        url = URL + "login"
+        data = {
+            "email": "damian@gmail.com",
+            "password": "wachtwoord"
+        }
+        res = requests.post(url, data = data)
+        if res.status_code != 200:
+            print("Unable to log in")
+            return
+        token = res.text[1:-1]
+        url = URL + "details"
+        headers = {
+            "Authorization": "Bearer " + token
+        }
+        res = requests.get(url, headers = headers)
+        if res.status_code != 200:
+            print("Unable to get user details")
+            return
+        userDetails = res.json()
+        broeikas = userDetails["Broeikas"][0]
+        self.farmID = broeikas["Id"]
+        boxes = []
+        for i in range(1, 7):
+            plantID = broeikas["dock" + str(i)]
+            if str(plantID) != "0":
+                big = (i == 1) # nog aanpassen, uit stekker halen
+                boxes.append(Box(i, big, token, plantID))
+        return boxes
+
     def rain(self, valve):
         if (valve < 1) or (valve > 4):
             return
@@ -167,7 +198,7 @@ class Main:
             "temperature": data[4],
             "humidity": data[5]
         }
-        url = "sensordatabroeikas/EJxhMpFqwRPo2WAz1rx8"
+        url = URL + "sensordatabroeikas/" + self.farmID
         res = requests.post(url, data = jsonData)
         if res.status_code != 200:
             print("Error posting data")
@@ -175,14 +206,32 @@ class Main:
             print(res.text)
 
 class Box:
-    def __init__(self, x, y, big, name, soilHumidity, plantGrowth):
-        self.x = x
-        self.y = y
+    def __init__(self, dock, big, token, plantID):
+        self.x = (dock - 1) // 2
+        self.y = (dock - 1) % 2
         self.big = big
-        self.name = name
-        self.soilHumidity = soilHumidity
-        self.plantGrowth = plantGrowth
-        self.desiredHumidity = 50
+        self.token = token
+        self.plantID = plantID
+        self.name = ""
+        self.soilHumidity = 0
+        self.plantGrowth = 0
+        self.desiredHumidity = 0
+        self.getPlantData() 
+
+    def getPlantData(self):
+        url = URL + "plant/" + self.plantID
+        headers = {
+            "Authorization": "Bearer " + self.token
+        }
+        res = requests.get(url, headers = headers)
+        if res.status_code != 200:
+            print("Unable to get plant data")
+            return
+        plant = res.json()
+        self.name = plant["body"]
+        self.soilHumidity = plant["currentSoilMoisture"]
+        self.plantGrowth = plant["growthPercentage"]
+        self.desiredHumidity = plant["desiredSoilMoisture"]
         
     def checkWatering(self, main):
         if self.soilHumidity < self.desiredHumidity:
@@ -207,10 +256,10 @@ class Box:
 
     def reportPlantData(self):
         data = {
-	        "soilMoisture": self.soilHumidity,
-	        "growthPercentage": self.plantGrowth
+            "soilMoisture": self.soilHumidity,
+            "growthPercentage": self.plantGrowth
         }
-        url = URL + "sensordataplant/XtM0Z4mwmXoj1mH7IZ1E"
+        url = URL + "sensordataplant/" + self.plantID
         res = requests.post(url, data = data)
         if res.status_code != 200:
             print("Error posting data")
@@ -218,16 +267,13 @@ class Box:
             print(res.text)
 
 class Interface:
-    def __init__(self, main):
+    def __init__(self, main, boxes):
         self.main = main
+        self.boxes = boxes
         self.temp = 21.01234567
         self.hum = 65
         self.light = 30
         self.lastHour = datetime.now().minute # change to hour
-        self.boxes = []
-        self.boxes.append(Box(0, 0, True, "Tomaat", 10, 30))
-        self.boxes.append(Box(2, 0, False, "Tuinkers", 50, 60))
-        self.boxes.append(Box(2, 1, False, "Basilicum", 99, 90))
         glutInit()
         #glutInitDisplayMode(GLUT_MULTISAMPLE)
         #glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT)
