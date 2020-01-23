@@ -21,16 +21,80 @@ class UserProfile extends Component {
     super(props);
     this.state = {
         logged_in: false,
-        loading: true
+        loading: true,
+        location: "",
+        bio : "",
+        selectedFile: "",
+        img: null
     };
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
 }
 
-  componentDidMount = () => {
-    const header = localStorage.getItem('jwt token')
+handleChange(event) {
+  const target = event.target;
+  const value =  target.value;
+  const name = target.name;
+  this.setState({
+    [name]: value
+  });
+}
 
-    if( localStorage.getItem('jwt token') === null ){
-        this.redirect();
+fileSelectedHandler = event => {
+  this.setState({
+    selectedFile: event.target.files[0]
+  })
+}
+
+fileUploadHandler = () => {
+  
+  const header = localStorage.getItem('jwt token')
+  const fd = new FormData();
+  fd.append('image', this.state.selectedFile, this.state.selectedFile.name)
+  axios({
+    method: 'post',
+    url: 'https://europe-west1-smartbroeikas.cloudfunctions.net/api/user/image',
+    headers: {Authorization:header, 'content-type': 'application/json'},
+    data:fd
+  })
+  .then(res => {
+    window.location.reload();
+  })
+  .catch(e => {
+    console.log(e)
+  })
+}
+
+handleSubmit = (event) => {
+  alert('A name was submitted: ' + this.state.bio + this.state.location);
+  const location = this.state.location;
+  const bio = this.state.bio;
+  const header = localStorage.getItem('jwt token')
+  axios({
+    method: 'post',
+    url: 'https://europe-west1-smartbroeikas.cloudfunctions.net/api/user',
+    headers: {Authorization:header},
+    data: {
+      bio,
+      location
     }
+  })
+  .then(result => {
+      alert('Succes' + result);   
+      this.setState({
+          bio : bio,
+          location: location
+      })       
+    })
+   .catch(e => {
+        alert(header);    
+    });
+    
+  event.preventDefault();
+}
+
+componentDidMount = () => {
+    const header = localStorage.getItem('jwt token')
 
     axios.get('https://europe-west1-smartbroeikas.cloudfunctions.net/api/details', {headers: {Authorization:header}})
         .then(res => {
@@ -38,35 +102,20 @@ class UserProfile extends Component {
                     user : res.data.credentials,
                     planten : res.data.Planten,
                     logged_in: true,
-                    loading: false
-                    
+                    loading: false,
+                    bio: res.data.credentials.bio,
+                    location: res.data.credentials.location,      
+                    img: res.data.credentials.imageUrl              
             })
             console.log(this.state)
         })         
         .catch((err) => {
             if(err == 'Error: Request failed with status code 403'){
-                this.redirect();
             }
         });
 }
-
-
   render() {
-    const override = css`
-    display: block;
-    margin: 0 auto;
-    border-color: 4px solid #49184f;
-    position: fixed;
-    z-index: 999;
-    height: 150px;
-    width: 150px;
-    overflow: visible;
-    margin: auto;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-`;
+
     if( this.state.loading ) {
       return(
           this.state.loading ? <div>{
@@ -81,14 +130,21 @@ class UserProfile extends Component {
       );
   } else {
     const date = this.state.user.created.split(" ")
-    const like = "Likes: "
     const plants = this.state.planten.map((plant) => 
-    
     <Col lg={3} sm={6}>
       <StatsCard
-                bigIcon={<i className="pe-7s-leaf" />}
-                statsText={plant.body}
-                statsValue={like + plant.likeCount}
+                bigIcon={<div>
+                  <i className="pe-7s-leaf" />
+                  <p> {plant.body}</p>
+                  </div>}
+
+                statsValue={
+                  
+                <p> Likes:<br></br> {plant.likeCount} <br></br>
+                 <br></br> Grondvochtigheid: <br></br>{plant.currentSoilMoisture}
+                </p> 
+
+                }
                 statsIcon={<i className="fa fa-calendar-o" />}
                 statsIconText={plant.createdAt}
               />
@@ -101,18 +157,27 @@ class UserProfile extends Component {
           <Row>
 
           <Col md={4}>
+     
+   
+
               <UserCard
                 bgImage="https://images.squarespace-cdn.com/content/v1/52607a12e4b09a5b407933dd/1397192939867-FKOZYBJTVRG6EQV0QVLF/ke17ZwdGBToddI8pDm48kDLNi4VuRPPv4o6xvaQaV48UqsxRUqqbr1mOJYKfIPR7LoDQ9mXPOjoJoqy81S2I8N_N4V1vUb5AoIIIbLZhVYy7Mythp_T-mtop-vrsUOmeInPi9iDjx9w8K4ZfjXt2dgPj-jb3FIxaFObZnptc5ZqmTvRvnyT87dNVz9QRODYYMW9u6oXQZQicHHG1WEE6fg/IMG_0998.JPG"
-                avatar={this.state.user.imageUrl}
-                name={this.state.user.handle}
+                avatar={this.state.img}
+                
+                name={
+                    <div>
+               
+                    {this.state.user.handle}
+                    </div>}
                 userName={this.state.user.email}
                 description={
                   <span>
                   
                     <br />
-                  Locatie:         {this.state.user.location}
-                    <br />
-                  {this.state.user.bio}
+                  Locatie: {this.state.location}
+                  <br />
+                   <br/>
+                  {this.state.bio}
                   <br/>
                   <br/>
                   Lid sinds: {date[2] +"/"+ date[1] +"/"+ date[3]}
@@ -132,10 +197,70 @@ class UserProfile extends Component {
                   </div>
                 }
               />
+
             </Col>
-                <h3 className="justify-content-center">Mijn Planten</h3>
-            
-                {plants}
+            <Col md={8}>
+              <Card
+                title="Edit Profile"
+                content={
+                 
+                  <form onSubmit={this.handleSubmit}>
+                        
+                      <ControlLabel>ProfielFoto</ControlLabel>
+                      <input className="inputfile" type="file" onChange={this.fileSelectedHandler}/>
+                      <Button onClick={this.fileUploadHandler}>Upload</Button>
+
+                      <br></br>
+                      <br></br>
+
+                        <ControlLabel>Plaats</ControlLabel>
+                        <FormControl
+                            name="location"
+                            value={this.state.location} 
+                            onChange={this.handleChange}
+                            rows="1"
+                            componentClass="textarea"
+                            bsClass="form-control"
+                            placeholder="Plaats"
+                          />
+                    <br></br>
+                    <Row>
+                      <Col md={12}>
+                        <FormGroup controlId="formControlsTextarea">
+                          <ControlLabel>Over mij</ControlLabel>
+                          <FormControl
+                            name="bio"
+                            value={this.state.bio} 
+                            onChange={this.handleChange}
+                            rows="5"
+                            componentClass="textarea"
+                            bsClass="form-control"
+                            placeholder="Vertel wat over jezelf"
+                          />
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                    <Button bsStyle="info" pullRight fill type="submit">
+                      Update profiel
+                    </Button>
+                    <div className="clearfix" />
+                  </form>
+                }
+              />
+            </Col>
+
+            <Col md={8}>
+              <Card
+                title="Mijn Planten"
+                content={
+                  <div>
+                  {plants}
+                  </div>
+                }
+              />
+            </Col>
+
+               
 
     
 

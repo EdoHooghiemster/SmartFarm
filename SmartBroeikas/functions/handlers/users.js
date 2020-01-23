@@ -83,6 +83,9 @@ exports.Login = (req, res) => {
             if(err.code ==='auth/wrong-password'){
                 return res.status(403).json({general: 'wrong credentials'})
             }
+            if(err.code ==='auth/user-not-found'){
+                return res.status(403).json({general: 'wrong credentials'})
+            }
             else{
             return res.status(500).json({errror: err.code})
              }
@@ -116,7 +119,9 @@ exports.getUser = (req, res) => {
             .then(doc => {
                 Data.Broeikas = [];
                 doc.forEach(data => {
-                    Data.Broeikas.push(data.data())
+                    const dataBroeikas = data.data()
+                    dataBroeikas.Id = data.id
+                    Data.Broeikas.push(dataBroeikas)
                 })
                 return db.collection('plants').where('userHandle', '==', req.user.handle).get();
             })

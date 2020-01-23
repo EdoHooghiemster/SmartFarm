@@ -11,7 +11,7 @@ const cors = require('cors')
 
 app.use(cors())
 //plant func
-app.get('/getplants',FBAuth, getPlants)
+app.get('/getplants', getPlants)
 app.post('/createplant', FBAuth, createPlant)
 app.get('/plant/:plantId', getPlant)
 app.post('/plant/:plantId/comment', FBAuth, commentOnPlant)

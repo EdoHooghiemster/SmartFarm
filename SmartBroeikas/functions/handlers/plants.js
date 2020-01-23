@@ -33,10 +33,8 @@ db
     let plants = [];
     data.forEach(doc => {
         plants.push({
-            plantId : doc.id,
-            body: doc.data().body,
-            userHandle: doc.data().userHandle, 
-            createdAt: doc.data().createdAt
+            plant : doc.data()
+
         })
     });
     return res.json(plants);
@@ -53,7 +51,9 @@ exports.createPlant = (req, res) => {
         userHandle: req.user.handle,
         createdAt: new Date().toISOString(),
         likeCount: 0,
-        soilMoisture: 0
+        currentSoilMoisture: 0,
+        desiredSoilMoisture: 0,
+        growthPercentage: 0
     }
     db
     .collection('plants')
@@ -208,7 +208,7 @@ exports.plantStamp = (req,res) => {
 
 exports.plantSettings = (req,res) => {
     let settings = {
-        soilMoisture: req.body.soilMoisture, 
+        currentSoilMoisture: req.body.currentSoilMoisture, 
         growthPercentage: req.body.growthPercentage
     }
 

@@ -2,8 +2,9 @@ const {db} = require('../utilities/admin')
 
 exports.linkSmartFarm = (req,res) => {
     const newSmartFarm = {
-        Temprature : 0,
-        Humidity: 0,
+        humidity : 0,
+        temperature: 0,
+        lightIntensity: 0,
         LedColor: null,
         Water: null,
         userHandle : req.user.handle,
@@ -75,9 +76,9 @@ exports.getplantsdocked = (req, res) => {
 
 exports.broeikasSettings = (req,res) => {
     let settings = {
-        tempratuur: req.body.temperature,
-        lightIntensiry: req.body.lightIntensity,
-        luchtvochtigheid: req.body.humidity
+        temperature: req.body.temperature,
+        lightIntensity: req.body.lightIntensity,
+        humidity: req.body.humidity
     }
     db
     .collection('broeikassen')
