@@ -256,7 +256,7 @@ class Box:
 
     def reportPlantData(self):
         data = {
-            "soilMoisture": self.soilHumidity,
+            "currentSoilMoisture": self.soilHumidity,
             "growthPercentage": self.plantGrowth
         }
         url = URL + "sensordataplant/" + self.plantID
