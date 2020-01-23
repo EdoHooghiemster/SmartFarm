@@ -19,7 +19,7 @@ URL = "https://europe-west1-smartbroeikas.cloudfunctions.net/api/"
 
 SPI_PORT = 0
 SPI_DEVICE = 0
-DHT_PIN = 13
+DHT_PIN = 14
 V1_PIN = 19
 V2_PIN = 16
 V3_PIN = 26
