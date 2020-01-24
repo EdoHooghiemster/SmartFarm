@@ -4,10 +4,10 @@ from time import sleep
 
 sensor = DHT.DHT22
 
-dhtPin = 13
+dhtPin = 14
 
 while True:
 	hum, temp = DHT.read_retry(sensor, dhtPin)
 	print("hum: " + str(hum))
 	print("temp: " + str(temp))
-	sleep(0.5)
+	sleep(1)
