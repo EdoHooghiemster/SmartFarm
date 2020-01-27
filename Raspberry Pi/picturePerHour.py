@@ -16,7 +16,13 @@ from timeloop import Timeloop
 tl = Timeloop()
 entryNumber = 0
 csvFile = 'growthResults.csv'
-
+dock1 = (1763,1914,2529,2692)
+dock2 = (1751,262,2518,1032)
+dock3 = (902,1196,1689,1942)
+dock4 = (854,278,1644,1044)
+dock5 = (2,1166,793,1930)
+dock6 = (11,266,800,1055)
+regions = [dock1, dock2, dock3, dock4, dock5, dock6]
 
 #async task loops
 @tl.job(interval=timedelta(seconds=10))
@@ -34,7 +40,7 @@ def makePicture():
     # pictureFullName = 'starry_night.jpg' 
     os.system("raspistill -n -t 1 -o pictures/"+ pictureFullName)
     pic = Image.open(r"pictures/"+pictureFullName)
-    pixCount = countPixels(pic, (0,0,863,972))
+    pixCount = countPixels(pic, regions[0])
     with open(csvFile, 'a', newline='') as file:
         writer = csv.writer(file)
         writer.writerow([entryNumber, currentDateTime, pixCount])
