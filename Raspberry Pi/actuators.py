@@ -35,8 +35,10 @@ class Main:
         a = Actuator("soilSensors", 6)
         actuators.append(a)
 
-        actuators[0].on()
-        sleep(2)
-        actuators[0].off()
+        for a in actuators:
+            a.on()
+            sleep(1)
+            a.off()
+            sleep(1)
 
 Main()
