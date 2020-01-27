@@ -229,9 +229,9 @@ class Box:
             return
         plant = res.json()
         self.name = plant["body"]
-        self.soilHumidity = plant["currentSoilMoisture"]
-        self.plantGrowth = plant["growthPercentage"]
-        self.desiredHumidity = plant["desiredSoilMoisture"]
+        self.soilHumidity = int(str(plant["currentSoilMoisture"]))
+        self.plantGrowth = int(str(plant["growthPercentage"]))
+        self.desiredHumidity = int(str(plant["desiredSoilMoisture"]))
         
     def checkWatering(self, main):
         if self.soilHumidity < self.desiredHumidity:
@@ -535,12 +535,12 @@ class Interface:
         glColor(1, 1, 0) # yellow
         if box.big:
             self.drawText(box.x * CELL_WIDTH + 20, box.y * CELL_HEIGHT + 265, box.name)
-            self.drawSoilHumidity(box.x * CELL_WIDTH + 65, box.y * CELL_HEIGHT + 150, int(box.soilHumidity), int(box.desiredHumidity))
-            self.drawPlantGrowth(box.x * CELL_WIDTH + 50, box.y * CELL_HEIGHT + 50, int(box.plantGrowth))
+            self.drawSoilHumidity(box.x * CELL_WIDTH + 65, box.y * CELL_HEIGHT + 150, box.soilHumidity, box.desiredHumidity)
+            self.drawPlantGrowth(box.x * CELL_WIDTH + 50, box.y * CELL_HEIGHT + 50, box.plantGrowth)
         else:
             self.drawText(box.x * CELL_WIDTH + 20, box.y * CELL_HEIGHT + 120, box.name)
-            self.drawSoilHumidity(box.x * CELL_WIDTH + 20, box.y * CELL_HEIGHT + 20, int(box.soilHumidity, box.desiredHumidity))
-            self.drawPlantGrowth(box.x * CELL_WIDTH + 80, box.y * CELL_HEIGHT + 30, int(box.plantGrowth))
+            self.drawSoilHumidity(box.x * CELL_WIDTH + 20, box.y * CELL_HEIGHT + 20, box.soilHumidity, box.desiredHumidity)
+            self.drawPlantGrowth(box.x * CELL_WIDTH + 80, box.y * CELL_HEIGHT + 30, box.plantGrowth)
 
     def drawBoxes(self):
         glLineWidth(1)
