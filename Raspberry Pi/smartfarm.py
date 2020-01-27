@@ -229,9 +229,9 @@ class Box:
             return
         plant = res.json()
         self.name = plant["body"]
-        self.soilHumidity = int(str(plant["currentSoilMoisture"]))
-        self.plantGrowth = int(str(plant["growthPercentage"]))
-        self.desiredHumidity = int(str(plant["desiredSoilMoisture"]))
+        self.soilHumidity = int(float(plant["currentSoilMoisture"]))
+        self.plantGrowth = int(float(plant["growthPercentage"]))
+        self.desiredHumidity = int(float(plant["desiredSoilMoisture"]))
         
     def checkWatering(self, main):
         if self.soilHumidity < self.desiredHumidity:
