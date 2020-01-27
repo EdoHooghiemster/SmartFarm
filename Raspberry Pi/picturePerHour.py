@@ -16,7 +16,7 @@ from timeloop import Timeloop
 tl = Timeloop()
 entryNumber = 0
 csvFile = 'growthResults.csv'
-row_index = 0
+
 
 #async task loops
 @tl.job(interval=timedelta(seconds=10))
@@ -48,19 +48,20 @@ def countPixels(img, region):
 
 def getLastEntry(csvFileName):
     data =[]
+    row_index = 0
     with open(csvFileName, "r", encoding="utf-8", errors="ignore") as scraped:
         reader = csv.reader(scraped, delimiter=',')
         for row in reader:
             if row:  # avoid blank lines
-                global row_index
                 row_index += 1
                 columns = [row[0], row[1], row[2]]
                 data.append(columns)
     last_row = data[-1]
-    return last_row[0]
+    if len(data) == 1:
+        return 0
+    else:
+        return last_row[0]
 
 if __name__ == "__main__":
-    lastEntryNumber = getLastEntry(csvFile)
-    if lastEntryNumber != '':
-        entryNumber = int(lastEntryNumber)
+    entryNumber = int(getLastEntry(csvFile))
     tl.start(block=True)
