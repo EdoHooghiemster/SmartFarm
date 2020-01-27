@@ -60,6 +60,7 @@ def getLastEntry(csvFileName):
     return last_row[0]
 
 if __name__ == "__main__":
-    lastEntryNumber = int(float(getLastEntry(csvFile)))
-    entryNumber = lastEntryNumber
+    lastEntryNumber = getLastEntry(csvFile)
+    if lastEntryNumber != '':
+        entryNumber = int(lastEntryNumber)
     tl.start(block=True)
