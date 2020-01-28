@@ -26,16 +26,16 @@ export class Dashboard extends Component {
         axios.get( 'https://europe-west1-smartbroeikas.cloudfunctions.net/api/details', { headers: { Authorization:header } } )
             .then( res => {
                 this.setState({
-                        userId:    res.data.credentials.userId,
-                        name:      res.data.credentials.email,
-                        bio:       res.data.credentials.bio,
-                        location:  res.data.credentials.location,
+                        user : res.data.credentials,
+                        broeikas: res.data.Broeikas[0],
                         logged_in: true,
-                        loading:   false
+                        loading: false
+                        
                 })
-            })
-            .catch(( err ) => {
-                if( err == 'Error: Request failed with status code 403' ){
+                console.log(this.state)
+            })         
+            .catch((err) => {
+                if(err == 'Error: Request failed with status code 403'){
                     this.redirect();
                 } else {
                     alert( 'Something went wrong fetching user details... ' + err );
@@ -86,52 +86,9 @@ export class Dashboard extends Component {
         } else {
             return(
                 <div>
-                    <UserDetails userData = { this.state } />
                     <Container style = {{ marginLeft : 70}} >
-                        <Row>
-                            <Col>
-                                <div className="dock-box-outer available">
-                                    <div className="dock-box-inner">
-                                        <div className="dock-title">
-                                            <h4>Dock 0</h4>
-                                        </div>
-                                        <div className="dock-description">Dock is beschikbaar</div>
-                                        <div className="dock-available">Vrij</div>
-                                        <div className="dock-button">
-                                            <a href="#">Details</a>
-                                        </div>                                    
-                                    </div>
-                                </div>
-                            </Col>
-                            <Col>
-                                <div className="dock-box-outer taken">
-                                    <div className="dock-box-inner">
-                                        <div className="dock-title">
-                                            <h4>Dock 1</h4>
-                                        </div>
-                                        <div className="dock-description">Tomatenplant</div>
-                                        <div className="dock-available">In gebruik</div>
-                                        <div className="dock-button">
-                                            <a href="#">Details</a>
-                                        </div>                                   
-                                    </div>
-                                </div>
-                            </Col>
-                            <Col>
-                                <div className="dock-box-outer taken">
-                                    <div className="dock-box-inner">
-                                        <div className="dock-title">
-                                            <h4>Dock 2</h4>
-                                        </div>
-                                        <div className="dock-description">Rucola</div>
-                                        <div className="dock-available">In gebruik</div>
-                                        <div className="dock-button">
-                                            <a href="#">Details</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </Col>
-                        </Row>
+                    <UserDetails className="justify-content-center" userData = { this.state } />
+                   
                     </Container>
         
                 </div>

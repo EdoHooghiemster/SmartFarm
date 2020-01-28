@@ -16,6 +16,7 @@
         margin: $navbar-margin-brand;
         padding: $navbar-padding-brand;
         font-size: $font-size-large-navbar;
+        color: $white-color;
     }
     .navbar-nav{
          > li > a {
@@ -157,8 +158,11 @@
 }
 
 .navbar-default {
-    background-color: $white-navbar;
+    // background-color: $white-navbar;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    background-color: rgba(32, 34, 39, 0.9);
+    background-size: cover;
+    color: $white-color;
   
     .navbar-nav{
         > li > a:not(.btn){

@@ -7,7 +7,6 @@ import ClipLoader from "react-spinners/ClipLoader";
 
 //Home Pagina
 export class Feed extends Component {
-    _isMounted = false;
 
     constructor(props) {
         super(props);
@@ -56,9 +55,8 @@ export class Feed extends Component {
                 this.setState({
                     plants: listTest
                 })
-                if (this._isMounted) {
-                    this.setState({ loading: false })
-                }
+                this.setState({ loading: false })
+
             }
           })
           .catch(error => {
@@ -118,7 +116,7 @@ export class Feed extends Component {
                             <Card style={{ width: '18rem' }}>
                                 <img className="card-img-top" style={{ backgroundImage: 'url(' + 'placeholder-plant.jpg' + ')' }} alt="  " />
                                 <Card.Body>
-                                    <Card.Title>{item.body}</Card.Title>
+                                    <Card.Title>{item.body} Test</Card.Title>
                                     <Card.Text>
                                     {item.plantId}
                                     </Card.Text>

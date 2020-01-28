@@ -49,20 +49,14 @@ class App extends React.Component{
     return (
       <Router>
            <div className="App">
-    {/* <Nav className="navbar bg"> */}
     <Nav className="header">
     <Navbar className=" navbar"  variant="dark" >
-    {/* <Navbar className=" navbar justify-content-center"  variant="dark" > */}
-      
-    {/* <Navbar.Brand href="#home" style={{position:"center"}}>Smart Farm</Navbar.Brand> */}
     <Navbar.Brand href="#home">Smart Farm</Navbar.Brand>
     <ul class="secondary_navbar">
       <li class="secondary_navbar_item">
-         {/* <img className="profileicon justify-content-end" src={profileicon}/> */}
          <img className="icon icon_profile imgprofileicon" src={profileicon}/>
       </li>
       <li class="secondary_navbar_item">
-        {/* <img className="imgarrowwhite justify-content-end" src={arrowwhite}/> */}
         <img className="icon icon_arrow imgarrowwhite" src={arrowwhite}/>
       </li>
     </ul>
