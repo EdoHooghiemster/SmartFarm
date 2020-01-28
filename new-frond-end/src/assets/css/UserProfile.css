@@ -9,6 +9,14 @@
 .w{
     width: 413px;
 }
+.white{
+    color: white;
+}
+.topbar{
+    background-image: url("../img/vaporwave2.jpg");
+  background-size: 100% 100%;
+ background-repeat: no-repeat;
+}
 .inputfile {
     display: inline-block !important;
     padding: 6px 12px;
@@ -26,4 +34,12 @@
     background-image: none;
     border: 1px solid transparent;
     border-radius: 4px;
+}
+
+.data {
+    display: inline-flex
+}
+
+.margright{
+    margin-right: 10px;
 }

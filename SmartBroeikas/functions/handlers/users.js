@@ -141,6 +141,23 @@ exports.getUser = (req, res) => {
       
 }
 
+exports.getLikes = (req,res) => {
+    const likes = []
+    db.collection('likes').where('userHandle', '==', req.user.handle).get()
+    .then(data => {
+        data.forEach(doc => {
+            const like = doc.data()
+            like.likeId = doc.id 
+            
+            likes.push(like)
+        })
+        return res.json(likes)
+    })
+    .catch(err => {
+        return res.status(500).json({error: err})
+    })
+}
+
 exports.uploadImage = (req,res) => {
     const BusBoy = require('busboy');
     const path = require('path');

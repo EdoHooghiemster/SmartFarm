@@ -132,17 +132,14 @@ componentDidMount = () => {
     const date = this.state.user.created.split(" ")
     const plants = this.state.planten.map((plant) => 
     <Col lg={3} sm={6}>
-      <StatsCard
-                bigIcon={<div>
-                  <i className="pe-7s-leaf" />
-                  <p> {plant.body}</p>
-                  </div>}
-
-                statsValue={
-                  
-                <p> Likes:<br></br> {plant.likeCount} <br></br>
-                 <br></br> Grondvochtigheid: <br></br>{plant.currentSoilMoisture}
-                </p> 
+      <Card
+                
+                title={<div> <i className="pe-7s-leaf"/> {plant.body}  </div> }
+                content={
+                  <div>
+                  <p>Likes: {plant.likeCount} </p>
+                  <p>Grondvochtigheid: {plant.currentSoilMoisture}</p> 
+                 </div> 
 
                 }
                 statsIcon={<i className="fa fa-calendar-o" />}
@@ -250,14 +247,7 @@ componentDidMount = () => {
             </Col>
 
             <Col md={8}>
-              <Card
-                title="Mijn Planten"
-                content={
-                  <div>
-                  {plants}
-                  </div>
-                }
-              />
+             {plants}
             </Col>
 
                

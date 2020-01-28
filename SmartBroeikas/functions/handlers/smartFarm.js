@@ -68,10 +68,29 @@ exports.linkDock = (req,res) =>
 exports.getplantsdocked = (req, res) => {
     db.collection('broeikassen').doc(req.params.smartFarmId).get()
     .then(doc => {
+        const docks = []
+        const filledDocks = []
         const obj = doc.data()
-        return res.json(obj)
-    })
+        
+        docks.push({dock1: obj.dock1},{ dock2: obj.dock2}, {dock3: obj.dock3},{dock4:  obj.dock4}, {dock5: obj.dock5}, {dock6: obj.dock6})
+        
+        docks.forEach(plantId => {
+                filledDocks.push(plantId)
+            }
+        );
     
+        return res.json(filledDocks)
+        
+
+        // docks.forEach(dock => {
+        //     db.collection('plants').doc(dock).get()
+        //     .then(data => {
+        //         test = data.data()
+        //     })    
+        // });
+        
+    })
+
 }
 
 exports.broeikasSettings = (req,res) => {
