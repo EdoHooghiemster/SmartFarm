@@ -20,7 +20,7 @@ import { NavLink } from "react-router-dom";
 
 import AdminNavbarLinks from "../Navbars/AdminNavbarLinks.jsx";
 
-import logo from "assets/img/reactlogo.png";
+import logo from "assets/img/temp-logo.png";
 
 class Sidebar extends Component {
   constructor(props) {
@@ -57,7 +57,7 @@ class Sidebar extends Component {
           )}
         <div className="logo">
           <a
-            href="https://www.creative-tim.com?ref=lbd-sidebar"
+            href="/admin/dashboard"
             className="simple-text logo-mini"
           >
             <div className="logo-img">
@@ -65,7 +65,7 @@ class Sidebar extends Component {
             </div>
           </a>
           <a
-            href="https://www.creative-tim.com?ref=lbd-sidebar"
+            href="/admin/dashboard"
             className="simple-text logo-normal"
           >
             Smart Farm
@@ -79,8 +79,8 @@ class Sidebar extends Component {
                 return (
                   <li
                     className={
-                      prop.upgrade
-                        ? "active active-pro"
+                        prop.hideInMenu
+                        ? "active active-pro hide"
                         : this.activeRoute(prop.layout + prop.path)
                     }
                     key={key}

@@ -1,0 +1,47 @@
+.navbar{
+    line-height: 0px;
+    padding: 0rem 0.3rem !important;
+    margin-bottom: 8px;
+    width: 100%;
+    
+    &-brand{
+        font-size: 3.8vh !important;
+        font-family: good times; 
+    }
+}
+
+.header{
+    background-image: url("../../images/vaporwave2.jpg");
+    background-size: 100%;
+    height: 8vh;
+    background-position-y: 12vh;
+    width: 100%;   
+}
+// .bg{
+//     background-image: url("../../images/vaporwave2.jpg");
+//     background-size: 100%;
+//     height: 8vh;
+//     background-position-y: 12vh;
+// }
+
+
+
+.secondary_navbar {
+    font-family: 'comic sans';
+    float: left;
+    &_item {
+        display: inline;
+    }
+
+    &_icon {
+        height: 30px;
+    }
+}
+
+// .navbar{
+//     background: $primary-color;
+
+//     &__item {
+
+//     }
+// }

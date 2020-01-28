@@ -1,0 +1,102 @@
+.plant-box {
+    border: 3px solid rgba(61, 130, 148, 0.2);
+    border-radius: 5px;
+    margin: 5px 5px 15px 5px;
+    padding: 10px 5px 10px 5px;
+    background-color: rgba(235, 235, 235, 0.5);
+}
+
+.plant-image {
+    max-width: 30%;
+    float: left;
+}
+
+.plant-image > img {
+    max-width: 100%;
+    height: auto;
+    max-height: 175px;
+    width: auto\9;
+    border: 1px solid #dadada;
+}
+
+.plant-title {
+    float: left;
+    border: 1px solid #dadada;
+    width: 20%;
+    height: 175px;
+    text-align: center;
+}
+
+.plant-soort {
+    float: left;
+    border: 1px solid #dadada;
+    width: 20%;
+    height: 175px;
+    text-align: center;
+}
+
+.plant-comments {
+    float: left;
+    height: 175px;
+    border: 1px solid #dadada;
+    width: 30%;
+    text-align: center;
+}
+
+.plant-comments-inner {
+    max-height: 175px;
+}
+
+.comment-box {
+    margin: 0px 3px 0px 3px;
+    float: left;
+    width: 100%;
+}
+
+.comment-input {
+    width: 80%;
+}
+
+input.comment-input-inner {
+    float: left;
+    margin: 10px 5px 5px 23px;
+    width: 100%;
+    height: 30px;
+}
+
+.user-name {
+    float: left;
+    margin: 2px;
+    font-weight: bold;
+}
+
+.comment {
+    float: left;
+    margin: 2px;
+}
+
+.like {
+    float: left;
+    margin: 2px;
+}
+
+/* Like Icon */
+.fa {
+    font-weight: bold;
+}
+
+i.fa-heart {
+    color: #8a388a;
+    font-size: 14pt !important;
+    margin-right: 5px;
+}
+
+i.fa-heart-o {
+    color: grey;
+    font-size: 14pt !important;
+}
+
+div.category.feed-like {
+    line-height: 2;
+    font-size: 13pt;
+}

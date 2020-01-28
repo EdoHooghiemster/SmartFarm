@@ -1,28 +1,8 @@
-/*!
-
-=========================================================
-* Light Bootstrap Dashboard React - v1.3.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/light-bootstrap-dashboard-react
-* Copyright 2019 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/light-bootstrap-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
 import Dashboard from "views/Dashboard.jsx";
+import Login from "views/Login.jsx";
+import Register from "views/Register.jsx";
 import UserProfile from "views/UserProfile.jsx";
-import TableList from "views/TableList.jsx";
-import Typography from "views/Typography.jsx";
-import Icons from "views/Icons.jsx";
-import Maps from "views/Maps.jsx";
-import Notifications from "views/Notifications.jsx";
-import Upgrade from "views/Upgrade.jsx";
+import Feed from "views/Feed.jsx";
 
 const dashboardRoutes = [
   {
@@ -40,20 +20,29 @@ const dashboardRoutes = [
     layout: "/admin"
   },
   {
-    path: "/notifications",
-    name: "Notifications",
+    path: "/feed",
+    name: "Planten Feed",
     icon: "pe-7s-bell",
-    component: Notifications,
+    component: Feed,
     layout: "/admin"
   },
   {
-    upgrade: true,
-    path: "/upgrade",
-    name: "Upgrade to PRO",
+    hideInMenu: true,
+    path: "/login",
+    name: "Login",
     icon: "pe-7s-rocket",
-    component: Upgrade,
+    component: Login,
+    layout: "/admin"
+  },
+  {
+    hideInMenu: true,
+    path: "/register",
+    name: "Register",
+    icon: "pe-7s-rocket",
+    component: Register,
     layout: "/admin"
   }
+
 ];
 
 export default dashboardRoutes;
