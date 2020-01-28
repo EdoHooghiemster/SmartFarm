@@ -1,0 +1,45 @@
+.profilepic{
+    width: 300px!important;
+    height: auto !important;
+}
+
+.broeikas{
+    width: 350px;
+}
+.w{
+    width: 413px;
+}
+.white{
+    color: white;
+}
+.topbar{
+    background-image: url("../img/vaporwave2.jpg");
+  background-size: 100% 100%;
+ background-repeat: no-repeat;
+}
+.inputfile {
+    display: inline-block !important;
+    padding: 6px 12px;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    touch-action: manipulation;
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+.data {
+    display: inline-flex
+}
+
+.margright{
+    margin-right: 10px;
+}

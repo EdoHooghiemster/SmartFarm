@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*!
 
 =========================================================
@@ -15,6 +16,9 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
+=======
+import 'assets/css/UserProfile.css';
+>>>>>>> edo
 import React, { Component } from "react";
 
 export class UserCard extends Component {
@@ -28,7 +32,11 @@ export class UserCard extends Component {
           <div className="author">
             <a href="#pablo">
               <img
+<<<<<<< HEAD
                 className="avatar border-gray"
+=======
+                className="avatar border-gray profilepic"
+>>>>>>> edo
                 src={this.props.avatar}
                 alt="..."
               />

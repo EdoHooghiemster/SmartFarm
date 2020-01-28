@@ -46,9 +46,15 @@ class Header extends Component {
   }
   render() {
     return (
+<<<<<<< HEAD
       <Navbar fluid>
         <Navbar.Header>
           <Navbar.Brand>
+=======
+      <Navbar  className="topbar navbar navbar-light bg-light" fluid>
+        <Navbar.Header>
+          <Navbar.Brand >
+>>>>>>> edo
             <a href="#pablo">{this.props.brandText}</a>
           </Navbar.Brand>
           <Navbar.Toggle onClick={this.mobileSidebarToggle} />
