@@ -19,6 +19,13 @@ import React, { Component } from "react";
 import { NavItem, Nav, NavDropdown, MenuItem } from "react-bootstrap";
 
 class AdminNavbarLinks extends Component {
+
+  handleClick(event) {
+    event.preventDefault();
+    localStorage.clear();
+    window.location.replace('/admin/login');
+  }
+
   render() {
     const notification = (
       <div>
@@ -36,7 +43,11 @@ class AdminNavbarLinks extends Component {
             Account
           </NavItem>
 
-          <NavItem eventKey={3} href="#">
+          <NavItem 
+            eventKey={3} 
+            href="#"
+            onClick={ e => this.handleClick(e) }
+          >
             Log out
           </NavItem>
         </Nav>

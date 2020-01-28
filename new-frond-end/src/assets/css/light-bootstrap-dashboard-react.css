@@ -348,7 +348,7 @@ body > .navbar-collapse:before {
 .sidebar:before,
 body > .navbar-collapse:before {
   opacity: .33;
-  background: #000000; }
+  background: #a743ad; }
 
 .sidebar:after,
 body > .navbar-collapse:after {
@@ -1471,7 +1471,7 @@ body > .navbar-collapse[data-color="purple"]:after {
   background-color: rgba(255, 255, 255, 0.96);
   border-bottom: 1px solid rgba(0, 0, 0, 0.1); }
   .navbar-default .navbar-nav > li > a:not(.btn) {
-    color: #9A9A9A; }
+    color: #dddddd; }
   .navbar-default .navbar-nav > .active > a,
   .navbar-default .navbar-nav > .active > a:not(.btn):hover,
   .navbar-default .navbar-nav > .active > a:not(.btn):focus,

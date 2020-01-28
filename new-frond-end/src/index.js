@@ -27,13 +27,28 @@ import "./assets/css/demo.css";
 import "./assets/css/pe-icon-7-stroke.css";
 
 import AdminLayout from "layouts/Admin.jsx";
+import PreLogin from "layouts/Prelogin.jsx";
 
-ReactDOM.render(
-  <BrowserRouter>
-    <Switch>
-      <Route path="/admin" render={props => <AdminLayout {...props} />} />
-      <Redirect from="/" to="/admin/dashboard" />
-    </Switch>
-  </BrowserRouter>,
-  document.getElementById("root")
-);
+const location = window.location.pathname;
+if(window.location.pathname === '/admin/login' ||  window.location.pathname === '/admin/register') {
+  ReactDOM.render(
+    <BrowserRouter>
+      <Switch>
+        <Route path={ location } render={props => <PreLogin {...props} />} />
+        <Redirect from="/" to={ location } />
+      </Switch>
+    </BrowserRouter>,
+    document.getElementById("root")
+  );
+} else {
+    ReactDOM.render(
+      <BrowserRouter>
+        <Switch>
+          <Route path="/admin" render={props => <AdminLayout {...props} />} />
+          <Redirect from="/" to="/admin/dashboard" />
+        </Switch>
+      </BrowserRouter>,
+      document.getElementById("root")
+    );
+}
+
