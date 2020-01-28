@@ -103,11 +103,6 @@ getPlants = async () => {
     }
 }
 
-componentDidMount = () => {
-    if( localStorage.getItem('jwt token') == null ){
-        this.redirect();
-    }
-}
 
 getCurrentLikes() {
   this.setState({ loading: true })
@@ -145,6 +140,11 @@ logPlants = async () => {
 
         response.data.map(function(item) {
           allPlants.push(item.plant.id); // For like check
+
+          axios.get(`https://europe-west1-smartbroeikas.cloudfunctions.net/api/getimage/${item.plant.userHandle}`, {})
+          .then(res => {
+            item.plant.imgUser = res.data
+          })
             listTest.push(item);
         })
  
@@ -183,12 +183,14 @@ logPlants = async () => {
     }
   }
 
+  
   componentWillMount() {
     this.logPlants();
     this.getCurrentLikes();
   }
 
   componentDidMount() {
+  
     this._isMounted = true;
     if( localStorage.getItem('jwt token') === null ){
         this.redirect();

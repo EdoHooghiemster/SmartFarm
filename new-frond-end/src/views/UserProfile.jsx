@@ -95,6 +95,19 @@ handleSubmit = (event) => {
 }
 
 componentDidMount = () => {
+const test = ["damian", "Edvleespet"];
+const testing = []
+
+  test.forEach(item => {
+    axios.get(`https://europe-west1-smartbroeikas.cloudfunctions.net/api/getimage/${item}`, {})
+    .then(res => {
+      testing.push(res.data)
+    })
+    
+  })
+  console.log(testing)
+  
+
     const header = localStorage.getItem('jwt token')
 
     axios.get('https://europe-west1-smartbroeikas.cloudfunctions.net/api/details', {headers: {Authorization:header}})
