@@ -38,7 +38,7 @@ def makePicture():
     entryNumber = entryNumber + 1
     print("saving: " + pictureFullName + " | next pict in 20 seconds")
     # pictureFullName = 'starry_night.jpg' 
-    os.system("raspistill -n -t 1 -o pictures/"+ pictureFullName)
+    os.system("raspistill -n -t 1000 -o pictures/"+ pictureFullName)
     pic = Image.open(r"pictures/"+pictureFullName)
     pixCount = countPixels(pic, regions[0])
     with open(csvFile, 'a', newline='') as file:
