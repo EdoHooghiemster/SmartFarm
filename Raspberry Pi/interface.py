@@ -1,6 +1,7 @@
 from OpenGL.GL import * # pylint: disable=W0614
 from OpenGL.GLUT import * # pylint: disable=W0614
 from datetime import datetime
+import requests
 
 WINDOW_WIDTH = 480
 WINDOW_HEIGHT = 320
@@ -8,25 +9,42 @@ TITLE_HEIGHT = 20
 CELL_WIDTH = (WINDOW_WIDTH - 10) / 3
 CELL_HEIGHT = (WINDOW_HEIGHT - TITLE_HEIGHT - 10) / 2
 
+URL = "https://europe-west1-smartbroeikas.cloudfunctions.net/api/"
+
 class Box:
-    def __init__(self, x, y, big, name, soilHumidity, plantGrowth):
-        self.x = x
-        self.y = y
+    def __init__(self, dock, big, token, plantID):
+        self.x = (dock - 1) // 2
+        self.y = (dock - 1) % 2
         self.big = big
-        self.name = name
-        self.soilHumidity = soilHumidity
-        self.plantGrowth = plantGrowth
-        self.desiredHumidity = 50
+        self.token = token
+        self.plantID = plantID
+        self.name = ""
+        self.soilHumidity = 0
+        self.plantGrowth = 0
+        self.desiredHumidity = 0
+        self.getPlantData() 
+
+    def getPlantData(self):
+        url = URL + "plant/" + self.plantID
+        headers = {
+            "Authorization": "Bearer " + self.token
+        }
+        res = requests.get(url, headers = headers)
+        if res.status_code != 200:
+            print("Unable to get plant data")
+            return
+        plant = res.json()
+        self.name = plant["body"]
+        self.soilHumidity = int(float(plant["currentSoilMoisture"]))
+        self.plantGrowth = int(float(plant["growthPercentage"]))
+        self.desiredHumidity = int(float(plant["desiredSoilMoisture"]))
 
 class Interface:
     def __init__(self):
         self.temp = 21.01234567
         self.hum = 65
         self.light = 30
-        self.boxes = []
-        self.boxes.append(Box(0, 0, True, "Tomaat", 10, 30))
-        self.boxes.append(Box(2, 0, False, "Tuinkers", 50, 60))
-        self.boxes.append(Box(2, 1, False, "Basilicum", 99, 90))
+        self.boxes = self.login()
         glutInit()
         #glutInitDisplayMode(GLUT_MULTISAMPLE)
         glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT)
@@ -42,6 +60,36 @@ class Interface:
         glutTimerFunc(1000, self.update, 0)
         glutMainLoop()
 
+    def login(self):
+        url = URL + "login"
+        data = {
+            "email": "damian@gmail.com",
+            "password": "wachtwoord"
+        }
+        res = requests.post(url, data = data)
+        if res.status_code != 200:
+            print("Unable to log in")
+            return
+        token = res.text[1:-1]
+        url = URL + "details"
+        headers = {
+            "Authorization": "Bearer " + token
+        }
+        res = requests.get(url, headers = headers)
+        if res.status_code != 200:
+            print("Unable to get user details")
+            return
+        userDetails = res.json()
+        broeikas = userDetails["Broeikas"][0]
+        self.farmID = broeikas["Id"]
+        boxes = []
+        for i in range(1, 7):
+            plantID = broeikas["dock" + str(i)]
+            if str(plantID) != "0":
+                big = (i == 1) # nog aanpassen, uit stekker halen
+                boxes.append(Box(i, big, token, plantID))
+        return boxes
+        
     def drawText(self, x, y, text):
         glPushMatrix()
         glTranslate(x, y, 0)
