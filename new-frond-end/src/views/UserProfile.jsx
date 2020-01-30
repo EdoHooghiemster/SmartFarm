@@ -16,6 +16,18 @@ import Button from "components/CustomButton/CustomButton.jsx";
 import { css } from "@emotion/core";
 import avatar from "assets/img/faces/face-3.jpg";
 import { StatsCard } from "components/StatsCard/StatsCard.jsx";
+import Modal from 'react-modal';
+
+const customStyles = {
+  content : {
+    top                   : '50%',
+    left                  : '50%',
+    right                 : 'auto',
+    bottom                : 'auto',
+    marginRight           : '-50%',
+    transform             : 'translate(-50%, -50%)'
+  }
+};
 
 class UserProfile extends Component {
   constructor(props) {
@@ -26,12 +38,69 @@ class UserProfile extends Component {
         location: "",
         bio : "",
         selectedFile: "",
-        img: null
+        img: null,
+        modalIsOpen: false,
+        body: "",
+        soil: ""
     };
     this.handleChange = this.handleChange.bind(this);
+    this.handleChange2 = this.handleChange2.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.closeModalAndSave = this.closeModalAndSave.bind(this);
+    this.openModal = this.openModal.bind(this);
+    this.afterOpenModal = this.afterOpenModal.bind(this);
+    this.closeModal = this.closeModal.bind(this);
+
+}
+openModal() {
+  this.setState({modalIsOpen: true});
 }
 
+afterOpenModal() {
+// references are now sync'd and can be accessed.
+  this.subtitle.style.color = '#f00';
+}
+
+closeModalAndSave() {
+
+  alert('A name was submitted: ' + this.state.body);
+  const body = this.state.body;
+  const header = localStorage.getItem('jwt token')
+  axios({
+    method: 'post',
+    url: 'https://europe-west1-smartbroeikas.cloudfunctions.net/api/createPlant',
+    headers: {Authorization:header},
+    data: {
+      body
+    }
+  })
+  .then(result => {
+      alert('Succes' + result);   
+      this.setState({
+          body : body
+      })       
+    })
+   .catch(e => {
+     alert(e)
+    });
+      axios.get('https://europe-west1-smartbroeikas.cloudfunctions.net/api/details', {headers: {Authorization:header}})
+        .then(res => {
+            this.setState({
+                    planten : res.data.Planten,
+                    logged_in: true,
+                    modalIsOpen: false
+            
+            })
+            console.log(this.state)
+        })         
+        .catch((err) => {
+            if(err == 'Error: Request failed with status code 403'){
+            }
+        });  
+}
+closeModal() {
+  this.setState({modalIsOpen: false});
+}
 handleChange(event) {
   const target = event.target;
   const value =  target.value;
@@ -39,6 +108,9 @@ handleChange(event) {
   this.setState({
     [name]: value
   });
+}
+handleChange2(event) {
+  this.setState({body: event.target.value});
 }
 
 fileSelectedHandler = event => {
@@ -88,13 +160,16 @@ handleSubmit = (event) => {
       })       
     })
    .catch(e => {
-        alert(header);    
+        alert(e);    
     });
     
   event.preventDefault();
 }
 
-componentDidMount = () => {
+
+
+componentWillMount = () => {
+this.setState({loading: true})
 const test = ["damian", "Edvleespet"];
 const testing = []
 
@@ -116,10 +191,11 @@ const testing = []
                     user : res.data.credentials,
                     planten : res.data.Planten,
                     logged_in: true,
-                    loading: false,
                     bio: res.data.credentials.bio,
                     location: res.data.credentials.location,      
-                    img: res.data.credentials.imageUrl              
+                    img: res.data.credentials.imageUrl,
+                    loading: false,
+            
             })
             console.log(this.state)
         })         
@@ -143,16 +219,58 @@ const testing = []
              </div>
       );
   } else {
+
+    const modal =     <div>
+    <h3> Mijn Planten  <Button  bsStyle="info" onClick={this.openModal}>+ Plantje Toevoegen</Button></h3>
+    <Modal
+      isOpen={this.state.modalIsOpen}
+      onAfterOpen={this.afterOpenModal}
+      onRequestClose={this.closeModal}
+      style={customStyles}
+      contentLabel="Example Modal"
+    >
+
+      <h2 ref={subtitle => this.subtitle = subtitle}></h2>
+      <h2>Plantje Toevoegen</h2>
+      <form>
+      <br></br>
+
+      <ControlLabel>Naam</ControlLabel>
+          <FormControl
+                required
+                            name="location"
+                            value={this.state.body} 
+                            onChange={this.handleChange2}
+                            rows="1"
+                            componentClass="textarea"
+                            bsClass="form-control"
+                            placeholder=""
+          />
+          <br></br>
+      <Button bsStyle="info" onClick={this.closeModalAndSave} pullRight fill type="submit">
+          Opslaan
+      </Button>
+      
+      <Button bsStyle="info" onClick={this.closeModal} pullLeft>
+          Sluiten
+      </Button>
+      </form>
+      <br></br>
+    
+    </Modal>
+   </div>
+
     const date = this.state.user.created.split(" ")
     const plants = this.state.planten.map((plant) => 
     <Col lg={3} sm={6}>
       <Card
                 
-                title={<div> <i className="pe-7s-leaf"/> {plant.body}  </div> }
+                title={<div> <i className="pe-7s-leaf"/> {plant.body}     </div> }
                 content={
                   <div>
                   <p>Likes: {plant.likeCount} </p>
-                  <p>Grondvochtigheid: {plant.currentSoilMoisture}</p> 
+                  <p>Grondvochtigheid:<br></br> {plant.currentSoilMoisture}</p> 
+                  <p>Gewenste:<br></br> {plant.desiredSoilMoisture}</p> 
                  </div> 
 
                 }
@@ -259,10 +377,9 @@ const testing = []
                 }
               />
             </Col>
-
-            <Col md={8}>
+                {modal}
+                <br></br>
              {plants}
-            </Col>
 
                
 

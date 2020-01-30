@@ -140,12 +140,7 @@ logPlants = async () => {
 
         response.data.map(function(item) {
           allPlants.push(item.plant.id); // For like check
-
-          axios.get(`https://europe-west1-smartbroeikas.cloudfunctions.net/api/getimage/${item.plant.userHandle}`, {})
-          .then(res => {
-            item.plant.imgUser = res.data
-          })
-            listTest.push(item);
+          listTest.push(item);
         })
  
         const resultLikedPlants = allPlants.filter(element => this.state.liked.includes(element));
