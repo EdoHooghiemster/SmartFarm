@@ -26,6 +26,7 @@ export class Card extends Component {
           <p className="category">{this.props.category}</p>
         </div>
         <div
+          
           className={
             "content" +
             (this.props.ctAllIcons ? " all-icons" : "") +
@@ -34,8 +35,9 @@ export class Card extends Component {
             (this.props.ctTableUpgrade ? " table-upgrade" : "")
           }
         >
+          
           {this.props.content}
-
+         
           <div className="footer">
             {this.props.legend}
             {this.props.stats != null ? <hr /> : ""}

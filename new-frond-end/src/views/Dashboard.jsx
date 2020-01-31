@@ -4,6 +4,8 @@ import ChartistGraph from "react-chartist";
 import { Grid, Row, Col} from "react-bootstrap";
 import Button from "components/CustomButton/CustomButton.jsx";
 import axios from 'axios';
+import { UserCard } from "components/UserCard/UserCard.jsx";
+
 import { Card } from "components/Card/Card.jsx";
 import { StatsCard } from "components/StatsCard/StatsCard.jsx";
 import { Tasks } from "components/Tasks/Tasks.jsx";
@@ -35,6 +37,7 @@ class Dashboard extends Component {
         dockedplants: null,
         modalIsOpen: false,
         loading: true,
+        selectedDock: ""
     };
     this.openModal = this.openModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
@@ -50,9 +53,64 @@ openModal() {
   this.setState({modalIsOpen: true});
 }
 
-test = (plantId,dockNumber,smartFarmId ) => {
-  alert(plantId + dockNumber + smartFarmId)
+test = (dockNumber ) => {
+  this.setState({
+    modalIsOpen: true,
+    selectedDock: dockNumber
+  });
 }
+
+dockPlant = (plantId) => {
+  const broeikasId = this.state.broeikas[0].Id
+  const header = localStorage.getItem('jwt token')
+
+  axios({
+    method: 'post',
+    url: `https://europe-west1-smartbroeikas.cloudfunctions.net/api/dock/${plantId}/${this.state.selectedDock}/${broeikasId}`,
+    headers: {Authorization:header},
+  })
+  .then(result => {
+    axios.get(`https://europe-west1-smartbroeikas.cloudfunctions.net/api/getdocks/${this.state.broeikas[0].Id}`, {headers: {Authorization:header}})
+    .then(res => {
+      this.setState({
+          dockedplants: res.data,
+          loading: false,
+          modalIsOpen: false
+        })
+      console.log(res.data)
+
+    })       
+  })
+ .catch(e => {
+   alert(e)
+  });
+}
+
+unDockPlant = (dockNumber) => {
+  const broeikasId = this.state.broeikas[0].Id
+  const header = localStorage.getItem('jwt token')
+
+  axios({
+    method: 'post',
+    url: `https://europe-west1-smartbroeikas.cloudfunctions.net/api/dock/"0"/${dockNumber}/${broeikasId}`,
+    headers: {Authorization:header},
+  })
+  .then(result => {
+    axios.get(`https://europe-west1-smartbroeikas.cloudfunctions.net/api/getdocks/${this.state.broeikas[0].Id}`, {headers: {Authorization:header}})
+    .then(res => {
+      this.setState({
+          dockedplants: res.data,
+          loading: false,
+        })
+      console.log(res.data)
+
+    })       
+  })
+ .catch(e => {
+   alert(e)
+  });
+}
+
 
   componentDidMount = () => {
     const header = localStorage.getItem('jwt token')
@@ -62,7 +120,9 @@ test = (plantId,dockNumber,smartFarmId ) => {
             this.setState({
                     user: res.data.credentials,
                     plants : res.data.Planten,
-                    broeikas: res.data.Broeikas,                      
+                    broeikas: res.data.Broeikas,  
+                    img: res.data.credentials.imageUrl,
+                    
             })
         })
         .then(() => {
@@ -100,7 +160,6 @@ test = (plantId,dockNumber,smartFarmId ) => {
   } else {
     const plants = 
     <div>
-    <Button onClick={this.openModal}>Mijn Planten</Button>
     <Modal
       isOpen={this.state.modalIsOpen}
       onAfterOpen={this.afterOpenModal}
@@ -118,12 +177,15 @@ test = (plantId,dockNumber,smartFarmId ) => {
                   <p>Likes: {plant.likeCount} </p>
                   <p>Grondvochtigheid:<br></br> {plant.currentSoilMoisture}</p> 
                   <p>Gewenste:<br></br> {plant.desiredSoilMoisture}</p> 
+                    <Button bsStyle="info" pullRight onClick={() => {this.dockPlant(plant.Id)}} >
+                      Dock
+                    </Button>
                  </div> 
-
                 }
                 statsIcon={<i className="fa fa-calendar-o" />}
                 statsIconText={plant.createdAt}
               />
+             
       </Col>
       )}
       <Button bsStyle="info" onClick={this.closeModal} >
@@ -134,32 +196,35 @@ test = (plantId,dockNumber,smartFarmId ) => {
     </div>
     
     const dockedplants = this.state.dockedplants
-    let dock1 =       <Col lg={2} sm={5}><Card title="Dock 1" content={
+    let dock1 =       <Col lg={3} sm={5}><Card title="Dock 1" content={
                             <div>
                               <p>Empty</p>            
-                              <Button bsStyle="info">
-                                  +
-                              </Button>                                      
+                              <Button bsStyle="info" onClick={() => {this.test('dock1')}}>
+                                  Dock Plant
+                               </Button>                                       
                             </div>
                           }
                         />
                       </Col>
 
     if(this.state.dockedplants.dock1 != null){
-      dock1 =         <Col lg={2} sm={5}> <Card title={<div>Dock 1 | {dockedplants.dock1.body}</div>} content={
+      dock1 =         <Col lg={3} sm={5}> <Card title={<div>Dock 1 | {dockedplants.dock1.body}</div>} content={
                           <div>
                           <p>Gewenste grondvochtigheid:<br></br> {dockedplants.dock1.desiredSoilMoisture}</p> 
                           <p>Huidige grondvochtigheid: <br></br> {dockedplants.dock1.currentSoilMoisture}</p> 
+                          <Button bsStyle="info" onClick={() => {this.unDockPlant('dock1')}}>
+                               Undock
+                          </Button> 
                           </div>
                         }/>
                     </Col>
     }
 
-   let dock2 =       <Col lg={2} sm={5}><Card title="Dock 2" content={
+   let dock2 =       <Col lg={3} sm={5}><Card title="Dock 2" content={
                             <div>
                                <p>Empty</p>    
 
-                               <Button bsStyle="info" onClick={() => { this.test("1",'dock2', this.state.broeikas[0].Id )}}>
+                               <Button bsStyle="info" onClick={() => {this.test('dock2')}}>
                                   Dock Plant
                                </Button>    
                                      
@@ -169,19 +234,22 @@ test = (plantId,dockNumber,smartFarmId ) => {
                       </Col>
 
     if(this.state.dockedplants.dock2 != null){
-      dock2 =         <Col lg={2} sm={5}> <Card title={<div>Dock 2 | {dockedplants.dock2.body}</div>} content={
+      dock2 =         <Col lg={3} sm={5}> <Card title={<div>Dock 2 | {dockedplants.dock2.body}</div>} content={
                           <div>
                           <p>Gewenste grondvochtigheid:<br></br> {dockedplants.dock2.desiredSoilMoisture}</p> 
                           <p>Huidige grondvochtigheid: <br></br> {dockedplants.dock2.currentSoilMoisture}</p> 
+                          <Button bsStyle="info" onClick={() => {this.unDockPlant('dock2')}}>
+                               Undock
+                          </Button> 
                           </div>
                         }/>
                     </Col>
     }
-    let dock3 =       <Col lg={2} sm={5}><Card title="Dock 3" content={
+    let dock3 =       <Col lg={3} sm={5}><Card title="Dock 3" content={
                             <div>
                               <p>Empty</p>    
 
-                               <Button bsStyle="info">
+                               <Button bsStyle="info" onClick={() => {this.test('dock3')}}>
                                   Dock Plant
                                </Button>                     
                             </div>
@@ -191,19 +259,22 @@ test = (plantId,dockNumber,smartFarmId ) => {
                       </Col>
 
     if(this.state.dockedplants.dock3 != null){
-      dock3 =         <Col lg={2} sm={5}> <Card title={<div>Dock 3 | {dockedplants.dock3.body}</div>} content={
+      dock3 =         <Col lg={3} sm={5}> <Card title={<div>Dock 3 | {dockedplants.dock3.body}</div>} content={
                           <div>
                           <p>Gewenste grondvochtigheid:<br></br> {dockedplants.dock3.desiredSoilMoisture}</p> 
                           <p>Huidige grondvochtigheid: <br></br> {dockedplants.dock3.currentSoilMoisture}</p> 
+                          <Button bsStyle="info" onClick={() => {this.unDockPlant('dock3')}}>
+                               Undock
+                          </Button> 
                           </div>
                         }/>
                     </Col>
     }
-    let dock4 =       <Col lg={2} sm={5}><Card title="Dock 4" content={
+    let dock4 =       <Col lg={3} sm={5}><Card title="Dock 4" content={
                             <div>
                               <p>Empty</p>    
 
-                               <Button bsStyle="info">
+                               <Button bsStyle="info" onClick={() => {this.test('dock4')}}>
                                   Dock Plant
                                </Button>                     
                             </div>
@@ -212,19 +283,22 @@ test = (plantId,dockNumber,smartFarmId ) => {
                       </Col>
 
     if(this.state.dockedplants.dock4 != null){
-      dock4 =         <Col lg={2} sm={5}> <Card title={<div>Dock 4 | {dockedplants.dock4.body}</div>} content={
+      dock4 =         <Col lg={3} sm={5}> <Card title={<div>Dock 4 | {dockedplants.dock4.body}</div>} content={
                           <div>
                           <p>Gewenste grondvochtigheid:<br></br> {dockedplants.dock4.desiredSoilMoisture}</p> 
                           <p>Huidige grondvochtigheid: <br></br> {dockedplants.dock4.currentSoilMoisture}</p> 
+                          <Button bsStyle="info" onClick={() => {this.unDockPlant('dock4')}}>
+                               Undock
+                          </Button> 
                           </div>
                         }/>
                     </Col>
     }
-    let dock5 =       <Col lg={2} sm={5}><Card title="Dock 5" content={
+    let dock5 =       <Col lg={3} sm={5}><Card title="Dock 5" content={
                             <div>
                               <p>Empty</p>    
 
-                               <Button bsStyle="info">
+                               <Button bsStyle="info" onClick={() => {this.test('dock5')}}>
                                   Dock Plant
                                </Button>                     
                             </div>
@@ -233,19 +307,21 @@ test = (plantId,dockNumber,smartFarmId ) => {
                       </Col>
 
     if(this.state.dockedplants.dock5 != null){
-      dock5 =         <Col lg={2} sm={5}> <Card title={<div>Dock 5 | {dockedplants.dock5.body}</div>} content={
+      dock5 =         <Col lg={3} sm={5}> <Card title={<div>Dock 5 | {dockedplants.dock5.body}</div>} content={
                           <div>
                           <p>Gewenste grondvochtigheid:<br></br> {dockedplants.dock5.desiredSoilMoisture}</p> 
                           <p>Huidige grondvochtigheid: <br></br> {dockedplants.dock5.currentSoilMoisture}</p> 
+                          <Button bsStyle="info" onClick={() => {this.unDockPlant('dock5')}}>
+                               Undock
+                          </Button> 
                           </div>
                         }/>
                     </Col>
     }
-    let dock6 =       <Col lg={2} sm={5}><Card title="Dock 6" content={
+    let dock6 =       <Col lg={3} sm={5}><Card title="Dock 6" content={
                             <div>
-                              <p>Empty</p>    
-
-                               <Button bsStyle="info">
+                              <p>Empty</p>
+                               <Button bsStyle="info" onClick={() => {this.test('dock6')}}>
                                   Dock Plant
                                </Button>                     
                             </div>
@@ -254,10 +330,13 @@ test = (plantId,dockNumber,smartFarmId ) => {
                       </Col>
 
     if(this.state.dockedplants.dock6 != null){
-      dock6 =         <Col lg={2} sm={5}> <Card title={<div>Dock 6 | {dockedplants.dock6.body}</div>} content={
+      dock6 =         <Col lg={3} sm={5}> <Card title={<div>Dock 6 | {dockedplants.dock6.body}</div>} content={
                           <div>
                           <p>Gewenste grondvochtigheid:<br></br> {dockedplants.dock6.desiredSoilMoisture}</p> 
                           <p>Huidige grondvochtigheid:<br></br> {dockedplants.dock6.currentSoilMoisture}</p> 
+                          <Button bsStyle="info" onClick={() => {this.unDockPlant('dock6')}}>
+                               Undock
+                          </Button> 
                           </div>
                         }/>
                     </Col>
@@ -268,19 +347,29 @@ test = (plantId,dockNumber,smartFarmId ) => {
     return (
       
       this.state.broeikas.map((broei) =>
-
+    
         <div className="content">
           <Grid fluid>
             <Row>
             <Col md={4}>
             <h3>Smart Farm  </h3>
-
+      {plants}
             <Card
-              title={ "Broeikas van " + broei.userHandle} 
+              avatar={this.state.img}
+
+              title={"Broeikas van " + broei.userHandle} 
               content ={
                 <div>
+                  <br></br>
+                  <br></br>
+                  <br></br>
                   <img src={broei.imageUrl}/>
                   <br></br>
+                  <br></br>
+                  <br></br>
+                  <br></br>
+                  <br></br>
+
                   <p>Id: {broei.Id}</p>
                 <Col className="data">
                   <p className="margright">Kleur: {broei.LedColor} </p> 
@@ -291,7 +380,6 @@ test = (plantId,dockNumber,smartFarmId ) => {
                 </div>
               }
             />
-            {plants}
             </Col>
             
             <h3>Docks</h3>

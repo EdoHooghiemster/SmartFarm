@@ -40,26 +40,46 @@ class UserProfile extends Component {
         selectedFile: "",
         img: null,
         modalIsOpen: false,
+        modalIsOpen2: false,
         body: "",
-        soil: ""
+        soil: "",
+        selectedPlant: "",    
+
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleChange2 = this.handleChange2.bind(this);
+    this.handleChange3 = this.handleChange3.bind(this);
+
     this.handleSubmit = this.handleSubmit.bind(this);
     this.closeModalAndSave = this.closeModalAndSave.bind(this);
     this.openModal = this.openModal.bind(this);
     this.afterOpenModal = this.afterOpenModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
 
+    this.openModal2 = this.openModal2.bind(this);
+    this.closeModal2 = this.closeModal2.bind(this);
+
+
 }
 openModal() {
   this.setState({modalIsOpen: true});
 }
 
+openModal2(plantid){
+  this.setState({modalIsOpen2: true,
+                 selectedPlant : plantid});
+
+}
+
+
 afterOpenModal() {
 // references are now sync'd and can be accessed.
   this.subtitle.style.color = '#f00';
 }
+closeModal2() {
+  this.setState({modalIsOpen2: false});
+}
+
 
 closeModalAndSave() {
 
@@ -98,6 +118,45 @@ closeModalAndSave() {
             }
         });  
 }
+
+closeModalAndSave2() {
+  alert('A name was submitted: ' + this.state.soil);
+  const desiredSoilMoisture = this.state.soil;
+  const header = localStorage.getItem('jwt token')
+  axios({
+    method: 'post',
+    url: `https://europe-west1-smartbroeikas.cloudfunctions.net/api/desiredSoilMoisture/${this.state.selectedPlant}`,
+    headers: {Authorization:header},
+    data: {
+      desiredSoilMoisture
+    }
+  })
+  .then(result => {
+      alert('Succes' + result);   
+      this.setState({
+          soil : desiredSoilMoisture
+      })      
+      axios.get('https://europe-west1-smartbroeikas.cloudfunctions.net/api/details', {headers: {Authorization:header}})
+      .then(res => {
+          this.setState({
+                  planten : res.data.Planten,
+                  logged_in: true,
+                  modalIsOpen2: false
+          
+          })
+          console.log(this.state)
+      })         
+      .catch((err) => {
+          if(err == 'Error: Request failed with status code 403'){
+          }
+      });  
+    })
+   .catch(e => {
+     alert(e)
+    });
+     
+}
+
 closeModal() {
   this.setState({modalIsOpen: false});
 }
@@ -110,9 +169,13 @@ handleChange(event) {
   });
 }
 handleChange2(event) {
+  console.log(this.state.soil)
+  this.setState({soil: event.target.value});
+}
+handleChange3(event) {
+  console.log(this.state.body)
   this.setState({body: event.target.value});
 }
-
 fileSelectedHandler = event => {
   this.setState({
     selectedFile: event.target.files[0]
@@ -192,7 +255,7 @@ const testing = []
                     planten : res.data.Planten,
                     logged_in: true,
                     bio: res.data.credentials.bio,
-                    location: res.data.credentials.location,      
+                    location: res.data.credentials.location,  
                     img: res.data.credentials.imageUrl,
                     loading: false,
             
@@ -240,7 +303,7 @@ const testing = []
                 required
                             name="location"
                             value={this.state.body} 
-                            onChange={this.handleChange2}
+                            onChange={this.handleChange3}
                             rows="1"
                             componentClass="textarea"
                             bsClass="form-control"
@@ -251,7 +314,7 @@ const testing = []
           Opslaan
       </Button>
       
-      <Button bsStyle="info" onClick={this.closeModal} pullLeft>
+      <Button bsStyle="info" onClick={this.closeModal} >
           Sluiten
       </Button>
       </form>
@@ -259,6 +322,45 @@ const testing = []
     
     </Modal>
    </div>
+        const modal2 =     <div>
+        <Modal
+          isOpen={this.state.modalIsOpen2}
+          onAfterOpen={this.afterOpenModal}
+          onRequestClose={this.closeModal2}
+          style={customStyles}
+          contentLabel="Example Modal"
+        >
+    
+          <h2 ref={subtitle => this.subtitle = subtitle}></h2>
+          <h2>Gewenste grondvochtigheid aanpassen</h2>
+          <form>
+          <br></br>
+    
+          <ControlLabel>Grondvochtigheid in %</ControlLabel>
+              <FormControl
+                    required
+                                name="soil"
+                                value={this.state.soil} 
+                                onChange={this.handleChange2}
+                                rows="1"
+                                componentClass="textarea"
+                                bsClass="form-control"
+                                placeholder=""
+              />
+              <br></br>
+          <Button bsStyle="info" onClick={()=>{this.closeModalAndSave2()}} pullRight fill type="submit">
+              Opslaan
+          </Button>
+          
+          <Button bsStyle="info" onClick={this.closeModal2} pullLeft>
+              Sluiten
+          </Button>
+          </form>
+          <br></br>
+  
+        </Modal>
+       </div>
+
 
     const date = this.state.user.created.split(" ")
     const plants = this.state.planten.map((plant) => 
@@ -269,8 +371,10 @@ const testing = []
                 content={
                   <div>
                   <p>Likes: {plant.likeCount} </p>
-                  <p>Grondvochtigheid:<br></br> {plant.currentSoilMoisture}</p> 
-                  <p>Gewenste:<br></br> {plant.desiredSoilMoisture}</p> 
+                  <p>Huidige Grondvochtigheid:<br></br> {plant.currentSoilMoisture}</p> 
+                  <p>Gewenste Grondvochtigheid: <Button onClick={() => {this.openModal2(plant.Id)}}  >Aanpassen</Button><br></br> {plant.desiredSoilMoisture}</p> 
+
+                 <br></br>
                  </div> 
 
                 }
@@ -378,6 +482,7 @@ const testing = []
               />
             </Col>
                 {modal}
+                {modal2}
                 <br></br>
              {plants}
 

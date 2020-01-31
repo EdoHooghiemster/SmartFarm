@@ -248,3 +248,38 @@ exports.plantSettings = (req,res) => {
             return res.status(500).json({message: 'something went wrong', res: err})
         })
 }
+
+exports.plantSettings = (req,res) => {
+    let settings = {
+        currentSoilMoisture: req.body.currentSoilMoisture, 
+        growthPercentage: req.body.growthPercentage
+    }
+
+    db
+    .collection('plants')
+    .doc(req.params.plantId)
+    .update(settings)
+        .then(doc => {
+            return res.json({message:"sensor data updated", res: doc})
+        })
+        .catch(err => {
+            return res.status(500).json({message: 'something went wrong', res: err})
+        })
+}
+
+exports.desiredSoilMoisture = (req,res) => {
+    let settings = {
+        desiredSoilMoisture: req.body.desiredSoilMoisture, 
+    }
+
+    db
+    .collection('plants')
+    .doc(req.params.plantId)
+    .update(settings)
+        .then(doc => {
+            return res.json({message:"sensor data updated", res: doc})
+        })
+        .catch(err => {
+            return res.status(500).json({message: 'something went wrong', res: err})
+        })
+}
