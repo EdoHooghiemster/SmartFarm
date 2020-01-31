@@ -115,7 +115,7 @@ class Main:
         self.sensors.append(s)
         s = SoilMoistureSensor("SMS3", "%", mcp, 2)
         self.sensors.append(s)
-        s = LightSensor("Light", "lux", mcp, 3)
+        s = LightSensor("Light", "lux", mcp, 7)
         self.sensors.append(s)
         s = TemperatureSensor("Temperature", "C")
         self.sensors.append(s)
