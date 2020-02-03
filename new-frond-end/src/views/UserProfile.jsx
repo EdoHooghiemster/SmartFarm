@@ -10,12 +10,8 @@ import {
 } from "react-bootstrap";
 import axios from 'axios';
 import { Card } from "components/Card/Card.jsx";
-import { FormInputs } from "components/FormInputs/FormInputs.jsx";
 import { UserCard } from "components/UserCard/UserCard.jsx";
 import Button from "components/CustomButton/CustomButton.jsx";
-import { css } from "@emotion/core";
-import avatar from "assets/img/faces/face-3.jpg";
-import { StatsCard } from "components/StatsCard/StatsCard.jsx";
 import Modal from 'react-modal';
 
 const customStyles = {
@@ -83,7 +79,6 @@ closeModal2() {
 
 closeModalAndSave() {
 
-  alert('A name was submitted: ' + this.state.body);
   const body = this.state.body;
   const header = localStorage.getItem('jwt token')
   axios({
@@ -95,13 +90,11 @@ closeModalAndSave() {
     }
   })
   .then(result => {
-      alert('Succes' + result);   
       this.setState({
           body : body
       })       
     })
    .catch(e => {
-     alert(e)
     });
       axios.get('https://europe-west1-smartbroeikas.cloudfunctions.net/api/details', {headers: {Authorization:header}})
         .then(res => {
@@ -111,7 +104,6 @@ closeModalAndSave() {
                     modalIsOpen: false
             
             })
-            console.log(this.state)
         })         
         .catch((err) => {
             if(err == 'Error: Request failed with status code 403'){
@@ -120,7 +112,6 @@ closeModalAndSave() {
 }
 
 closeModalAndSave2() {
-  alert('A name was submitted: ' + this.state.soil);
   const desiredSoilMoisture = this.state.soil;
   const header = localStorage.getItem('jwt token')
   axios({
@@ -132,7 +123,6 @@ closeModalAndSave2() {
     }
   })
   .then(result => {
-      alert('Succes' + result);   
       this.setState({
           soil : desiredSoilMoisture
       })      
@@ -144,7 +134,7 @@ closeModalAndSave2() {
                   modalIsOpen2: false
           
           })
-          console.log(this.state)
+     
       })         
       .catch((err) => {
           if(err == 'Error: Request failed with status code 403'){
@@ -152,7 +142,6 @@ closeModalAndSave2() {
       });  
     })
    .catch(e => {
-     alert(e)
     });
      
 }
@@ -169,11 +158,11 @@ handleChange(event) {
   });
 }
 handleChange2(event) {
-  console.log(this.state.soil)
+
   this.setState({soil: event.target.value});
 }
 handleChange3(event) {
-  console.log(this.state.body)
+
   this.setState({body: event.target.value});
 }
 fileSelectedHandler = event => {
@@ -197,12 +186,10 @@ fileUploadHandler = () => {
     window.location.reload();
   })
   .catch(e => {
-    console.log(e)
   })
 }
 
 handleSubmit = (event) => {
-  alert('A name was submitted: ' + this.state.bio + this.state.location);
   const location = this.state.location;
   const bio = this.state.bio;
   const header = localStorage.getItem('jwt token')
@@ -216,14 +203,12 @@ handleSubmit = (event) => {
     }
   })
   .then(result => {
-      alert('Succes' + result);   
       this.setState({
           bio : bio,
           location: location
       })       
     })
    .catch(e => {
-        alert(e);    
     });
     
   event.preventDefault();
@@ -243,7 +228,7 @@ const testing = []
     })
     
   })
-  console.log(testing)
+
   
 
     const header = localStorage.getItem('jwt token')
@@ -260,7 +245,6 @@ const testing = []
                     loading: false,
             
             })
-            console.log(this.state)
         })         
         .catch((err) => {
             if(err == 'Error: Request failed with status code 403'){

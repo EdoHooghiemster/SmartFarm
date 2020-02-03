@@ -1,19 +1,12 @@
 
 import React, { Component } from "react";
-import ChartistGraph from "react-chartist";
 import { Grid, Row, Col} from "react-bootstrap";
 import Button from "components/CustomButton/CustomButton.jsx";
 import axios from 'axios';
-import { UserCard } from "components/UserCard/UserCard.jsx";
+import ReactLoading from 'react-loading';
 
 import { Card } from "components/Card/Card.jsx";
-import { StatsCard } from "components/StatsCard/StatsCard.jsx";
-import { Tasks } from "components/Tasks/Tasks.jsx";
-import {
-  dataPie,
-  legendPie,
-} from "variables/Variables.jsx";
-import grid from "../grid.png"
+
 import Modal from 'react-modal';
 const customStyles = {
   content : {
@@ -77,12 +70,10 @@ dockPlant = (plantId) => {
           loading: false,
           modalIsOpen: false
         })
-      console.log(res.data)
 
     })       
   })
  .catch(e => {
-   alert(e)
   });
 }
 
@@ -102,12 +93,10 @@ unDockPlant = (dockNumber) => {
           dockedplants: res.data,
           loading: false,
         })
-      console.log(res.data)
 
     })       
   })
  .catch(e => {
-   alert(e)
   });
 }
 
@@ -132,10 +121,8 @@ unDockPlant = (dockNumber) => {
                 dockedplants: res.data,
                 loading: false
               })
-            console.log(res.data)
 
           }).catch((err) => {
-            console.log(err)
         });
         })         
         .catch((err) => {
@@ -149,7 +136,7 @@ unDockPlant = (dockNumber) => {
       return(
           this.state.loading ? <div>{
               <div>
-                  <h1>Wait pls</h1>
+                <ReactLoading type={"balls"} color={"#180053"} height={'20%'} width={'20%'} />
               </div>
              
           } </div>
@@ -210,8 +197,8 @@ unDockPlant = (dockNumber) => {
     if(this.state.dockedplants.dock1 != null){
       dock1 =         <Col lg={3} sm={5}> <Card title={<div>Dock 1 | {dockedplants.dock1.body}</div>} content={
                           <div>
-                          <p>Gewenste grondvochtigheid:<br></br> {dockedplants.dock1.desiredSoilMoisture}</p> 
-                          <p>Huidige grondvochtigheid: <br></br> {dockedplants.dock1.currentSoilMoisture}</p> 
+                          <p>Gewenste grondvochtigheid:<br></br> {dockedplants.dock1.desiredSoilMoisture} %</p> 
+                          <p>Huidige grondvochtigheid: <br></br> {dockedplants.dock1.currentSoilMoisture} %</p> 
                           <Button bsStyle="info" onClick={() => {this.unDockPlant('dock1')}}>
                                Undock
                           </Button> 
@@ -236,8 +223,8 @@ unDockPlant = (dockNumber) => {
     if(this.state.dockedplants.dock2 != null){
       dock2 =         <Col lg={3} sm={5}> <Card title={<div>Dock 2 | {dockedplants.dock2.body}</div>} content={
                           <div>
-                          <p>Gewenste grondvochtigheid:<br></br> {dockedplants.dock2.desiredSoilMoisture}</p> 
-                          <p>Huidige grondvochtigheid: <br></br> {dockedplants.dock2.currentSoilMoisture}</p> 
+                          <p>Gewenste grondvochtigheid:<br></br> {dockedplants.dock2.desiredSoilMoisture} %</p> 
+                          <p>Huidige grondvochtigheid: <br></br> {dockedplants.dock2.currentSoilMoisture} %</p> 
                           <Button bsStyle="info" onClick={() => {this.unDockPlant('dock2')}}>
                                Undock
                           </Button> 
@@ -261,8 +248,8 @@ unDockPlant = (dockNumber) => {
     if(this.state.dockedplants.dock3 != null){
       dock3 =         <Col lg={3} sm={5}> <Card title={<div>Dock 3 | {dockedplants.dock3.body}</div>} content={
                           <div>
-                          <p>Gewenste grondvochtigheid:<br></br> {dockedplants.dock3.desiredSoilMoisture}</p> 
-                          <p>Huidige grondvochtigheid: <br></br> {dockedplants.dock3.currentSoilMoisture}</p> 
+                          <p>Gewenste grondvochtigheid:<br></br> {dockedplants.dock3.desiredSoilMoisture} %</p> 
+                          <p>Huidige grondvochtigheid: <br></br> {dockedplants.dock3.currentSoilMoisture} %</p> 
                           <Button bsStyle="info" onClick={() => {this.unDockPlant('dock3')}}>
                                Undock
                           </Button> 
@@ -285,8 +272,8 @@ unDockPlant = (dockNumber) => {
     if(this.state.dockedplants.dock4 != null){
       dock4 =         <Col lg={3} sm={5}> <Card title={<div>Dock 4 | {dockedplants.dock4.body}</div>} content={
                           <div>
-                          <p>Gewenste grondvochtigheid:<br></br> {dockedplants.dock4.desiredSoilMoisture}</p> 
-                          <p>Huidige grondvochtigheid: <br></br> {dockedplants.dock4.currentSoilMoisture}</p> 
+                          <p>Gewenste grondvochtigheid:<br></br> {dockedplants.dock4.desiredSoilMoisture} %</p> 
+                          <p>Huidige grondvochtigheid: <br></br> {dockedplants.dock4.currentSoilMoisture} %</p> 
                           <Button bsStyle="info" onClick={() => {this.unDockPlant('dock4')}}>
                                Undock
                           </Button> 
@@ -309,8 +296,8 @@ unDockPlant = (dockNumber) => {
     if(this.state.dockedplants.dock5 != null){
       dock5 =         <Col lg={3} sm={5}> <Card title={<div>Dock 5 | {dockedplants.dock5.body}</div>} content={
                           <div>
-                          <p>Gewenste grondvochtigheid:<br></br> {dockedplants.dock5.desiredSoilMoisture}</p> 
-                          <p>Huidige grondvochtigheid: <br></br> {dockedplants.dock5.currentSoilMoisture}</p> 
+                          <p>Gewenste grondvochtigheid:<br></br> {dockedplants.dock5.desiredSoilMoisture} %</p> 
+                          <p>Huidige grondvochtigheid: <br></br> {dockedplants.dock5.currentSoilMoisture} %</p> 
                           <Button bsStyle="info" onClick={() => {this.unDockPlant('dock5')}}>
                                Undock
                           </Button> 
@@ -332,8 +319,8 @@ unDockPlant = (dockNumber) => {
     if(this.state.dockedplants.dock6 != null){
       dock6 =         <Col lg={3} sm={5}> <Card title={<div>Dock 6 | {dockedplants.dock6.body}</div>} content={
                           <div>
-                          <p>Gewenste grondvochtigheid:<br></br> {dockedplants.dock6.desiredSoilMoisture}</p> 
-                          <p>Huidige grondvochtigheid:<br></br> {dockedplants.dock6.currentSoilMoisture}</p> 
+                          <p>Gewenste grondvochtigheid:<br></br> {dockedplants.dock6.desiredSoilMoisture} %</p> 
+                          <p>Huidige grondvochtigheid:<br></br> {dockedplants.dock6.currentSoilMoisture} %</p> 
                           <Button bsStyle="info" onClick={() => {this.unDockPlant('dock6')}}>
                                Undock
                           </Button> 
@@ -363,7 +350,7 @@ unDockPlant = (dockNumber) => {
                   <br></br>
                   <br></br>
                   <br></br>
-                  <img src={broei.imageUrl}/>
+                  <img alt="" src={broei.imageUrl}/>
                   <br></br>
                   <br></br>
                   <br></br>
