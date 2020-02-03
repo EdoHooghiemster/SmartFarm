@@ -4,7 +4,7 @@ import { Grid, Row, Col} from "react-bootstrap";
 import Button from "components/CustomButton/CustomButton.jsx";
 import axios from 'axios';
 import ReactLoading from 'react-loading';
-
+import AlarmClock from '../components/Clock/Clock.jsx'
 import { Card } from "components/Card/Card.jsx";
 
 import Modal from 'react-modal';
@@ -99,8 +99,12 @@ unDockPlant = (dockNumber) => {
  .catch(e => {
   });
 }
-
-
+  componentDidMount() {
+    this.interval = setInterval(() => this.setState({ time: Date.now() }), 1000);
+  }
+  componentWillUnmount() {
+    clearInterval(this.interval);
+  }
   componentDidMount = () => {
     const header = localStorage.getItem('jwt token')
 
@@ -329,8 +333,8 @@ unDockPlant = (dockNumber) => {
                     </Col>
     }
     
- 
 
+else{}
     return (
       
       this.state.broeikas.map((broei) =>
@@ -339,7 +343,7 @@ unDockPlant = (dockNumber) => {
           <Grid fluid>
             <Row>
             <Col md={4}>
-            <h3>Smart Farm  </h3>
+            <h3>Smart Farm </h3>
       {plants}
             <Card
               avatar={this.state.img}
@@ -347,23 +351,22 @@ unDockPlant = (dockNumber) => {
               title={"Broeikas van " + broei.userHandle} 
               content ={
                 <div>
-                  <br></br>
-                  <br></br>
+                 
                   <br></br>
                   <img alt="" src={broei.imageUrl}/>
                   <br></br>
                   <br></br>
                   <br></br>
+                  <p>  Id: {broei.Id}</p>
                   <br></br>
-                  <br></br>
-
-                  <p>Id: {broei.Id}</p>
                 <Col className="data">
                   <p className="margright">Kleur: {broei.LedColor} </p> 
                   <p className="margright">Licht: {broei.lightIntensity}</p>  
                   <p className="margright">Luchtvochtigheid: {broei.humidity}</p>
                   <p className="margright">Temperatuur: {broei.temperature} </p>   
                 </Col>
+                  
+                  <AlarmClock lightOn={broei.lightsOn} lightOff={broei.lightsOff} nextAlarm={broei.alarmTime} id={broei.Id}/>
                 </div>
               }
             />

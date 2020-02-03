@@ -268,7 +268,7 @@ const testing = []
   } else {
 
     const modal =     <div>
-    <h3> Mijn Planten  <Button  bsStyle="info" onClick={this.openModal}>+ Plantje Toevoegen</Button></h3>
+    <h3> Mijn Planten  <Button  bsStyle="info" onClick={this.openModal}>+ Plant Toevoegen</Button></h3>
     <Modal
       isOpen={this.state.modalIsOpen}
       onAfterOpen={this.afterOpenModal}
@@ -278,7 +278,7 @@ const testing = []
     >
 
       <h2 ref={subtitle => this.subtitle = subtitle}></h2>
-      <h2>Plantje Toevoegen</h2>
+      <h2>Plant toevoegen</h2>
       <form>
       <br></br>
 

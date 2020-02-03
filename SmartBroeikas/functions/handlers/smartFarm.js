@@ -129,6 +129,69 @@ exports.broeikasSettings = (req,res) => {
         })
 }
 
+exports.broeikasAlarm = (req,res) => {
+    let settings = {
+        alarmTime: req.body.alarmTime,
+    }
+    db
+    .collection('broeikassen')
+    .doc(req.params.smartFarmId)
+    .update(settings)
+        .then(doc => {
+            return res.json({message:"Alarm has been set", res: doc})
+        })
+        .catch(err => {
+            return res.status(500).json({message: 'something went wrong', res: err})
+        })
+}
+
+exports.broeikasLightsOff = (req,res) => {
+    let settings = {
+        lightsOff: req.body.lightsOff,
+    }
+    db
+    .collection('broeikassen')
+    .doc(req.params.smartFarmId)
+    .update(settings)
+        .then(doc => {
+            return res.json({message:"Time has been set", res: doc})
+        })
+        .catch(err => {
+            return res.status(500).json({message: 'something went wrong', res: err})
+        })
+}
+
+exports.broeikasLightsOn = (req,res) => {
+    let settings = {
+        lightsOn: req.body.lightsOn,
+    }
+    db
+    .collection('broeikassen')
+    .doc(req.params.smartFarmId)
+    .update(settings)
+        .then(doc => {
+            return res.json({message:"Time has been set", res: doc})
+        })
+        .catch(err => {
+            return res.status(500).json({message: 'something went wrong', res: err})
+        })
+}
+exports.turnLightOff = (req,res)=> {
+    let settings = {
+        lightOn: false
+    }
+    db
+    .collection('broeikassen')
+    .doc(req.params.smartFarmId)
+    .update(settings)
+        .then(doc => {
+            return res.json({message:"Lights have been turned off", res: doc})
+        })
+        .catch(err => {
+            return res.status(500).json({message: 'something went wrong', res: err})
+        })
+}
+
 exports.getVar = (req,res) => {
     db.collection('broeikassen').doc('JYRUfG7fNGNIANd4AE6u').get()
     .then(doc => {
