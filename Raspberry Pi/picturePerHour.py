@@ -16,7 +16,7 @@ from timeloop import Timeloop
 tl = Timeloop()
 entryNumber = 0
 csvFile = 'growthResults.csv'
-dock1 = (1763,1914,2529,2692)
+dock1 = (1763,1160,2529,1896)
 dock2 = (1751,262,2518,1032)
 dock3 = (902,1196,1689,1942)
 dock4 = (854,278,1644,1044)
