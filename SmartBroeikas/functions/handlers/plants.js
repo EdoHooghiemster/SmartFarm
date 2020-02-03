@@ -23,6 +23,18 @@ exports.getPlant = (req, res) => {
             return res.status(500).json({error: err})
         })
 }
+exports.getImageFeed = (req, res) => {
+    let data = {}
+    db.doc(`/users/${req.params.handle}`).get()
+    .then(doc => {
+        if(!doc.exists){
+            return res.status(404).json({error: 'error not found'})
+        }
+        data = doc.data().imageUrl;
+        return res.json(data)
+    })
+}
+
 
 exports.getPlants = (req, res) => {
 db
@@ -37,16 +49,11 @@ db
         db.collection('users').where('handle', '==', handle)
         .get()
         .then(users => {
-            users.forEach(userImg =>{
-                data.forEach(doc1 => {
+            data.forEach(doc1 => {
                     const dataPlant = doc1.data()
                     dataPlant.id = doc1.id
-                    dataPlant.imgUser = userImg.data().imageUrl
                     plants.push({plant : dataPlant})
-                    
                 })
-               
-            })
             return res.json(plants);
         })
         .catch(err => {
@@ -63,26 +70,6 @@ db
 }
 
 
-exports.getPlants2 = (req, res) => {
-    let Data = {};
-
-    db
-    .collection('plants')
-    .orderBy('createdAt', 'desc')
-    .get()
-    .then(data => {
-        Data.plants = [];
-        data.forEach(plant => {
-            const dataPlant = plant.data()
-            dataPlant.id = plant.id
-            Data.plants.push(dataPlant)
-        })
-    })
-
-
-    return res.json(Data)
-
-}
 
 exports.createPlant = (req, res) => {
     const newPlant = {
@@ -248,6 +235,41 @@ exports.plantSettings = (req,res) => {
     let settings = {
         currentSoilMoisture: req.body.currentSoilMoisture, 
         growthPercentage: req.body.growthPercentage
+    }
+
+    db
+    .collection('plants')
+    .doc(req.params.plantId)
+    .update(settings)
+        .then(doc => {
+            return res.json({message:"sensor data updated", res: doc})
+        })
+        .catch(err => {
+            return res.status(500).json({message: 'something went wrong', res: err})
+        })
+}
+
+exports.plantSettings = (req,res) => {
+    let settings = {
+        currentSoilMoisture: req.body.currentSoilMoisture, 
+        growthPercentage: req.body.growthPercentage
+    }
+
+    db
+    .collection('plants')
+    .doc(req.params.plantId)
+    .update(settings)
+        .then(doc => {
+            return res.json({message:"sensor data updated", res: doc})
+        })
+        .catch(err => {
+            return res.status(500).json({message: 'something went wrong', res: err})
+        })
+}
+
+exports.desiredSoilMoisture = (req,res) => {
+    let settings = {
+        desiredSoilMoisture: req.body.desiredSoilMoisture, 
     }
 
     db

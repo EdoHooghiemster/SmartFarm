@@ -1,4 +1,6 @@
-const {db} = require('../utilities/admin')
+const {db, admin} = require('../utilities/admin')
+const config = require('../config.json')
+
 
 exports.linkSmartFarm = (req,res) => {
     const newSmartFarm = {
@@ -66,30 +68,46 @@ exports.linkDock = (req,res) =>
 }
 
 exports.getplantsdocked = (req, res) => {
+    let docks = []
+    let plants = {}
     db.collection('broeikassen').doc(req.params.smartFarmId).get()
     .then(doc => {
-        const docks = []
-        const filledDocks = []
         const obj = doc.data()
-        
-        docks.push({dock1: obj.dock1},{ dock2: obj.dock2}, {dock3: obj.dock3},{dock4:  obj.dock4}, {dock5: obj.dock5}, {dock6: obj.dock6})
-        
-        docks.forEach(plantId => {
-                filledDocks.push(plantId)
-            }
-        );
-    
-        return res.json(filledDocks)
-        
-
-        // docks.forEach(dock => {
-        //     db.collection('plants').doc(dock).get()
-        //     .then(data => {
-        //         test = data.data()
-        //     })    
-        // });
-        
+        docks.push({dock1: obj.dock1},{ dock2: obj.dock2}, {dock3: obj.dock3},{dock4:  obj.dock4}, {dock5: obj.dock5}, {dock6: obj.dock6})       
+        return docks 
     })
+    .then(dock => {
+        db.collection('plants').doc(dock[0]["dock1"]).get()
+        .then(doc => {
+            plants.dock1 = doc.data()
+            return db.collection('plants').doc(dock[1]["dock2"]).get()
+        })
+        .then(doc => {
+            plants.dock2 = doc.data()
+            return db.collection('plants').doc(dock[2]["dock3"]).get()
+        })
+        .then(doc => {
+            plants.dock3 = doc.data()
+            return db.collection('plants').doc(dock[3]["dock4"]).get()
+        })
+        .then(doc => {
+            plants.dock4 = doc.data()
+            return db.collection('plants').doc(dock[4]["dock5"]).get()
+        })
+        .then(doc => {
+            plants.dock5 = doc.data()
+            return db.collection('plants').doc(dock[5]["dock6"]).get()
+        })
+        .then(doc => {
+            plants.dock6 = doc.data()
+            return res.json(plants)
+        })
+        .catch(err => {
+            res.status(500).json({error: err.code})
+        })
+    })
+
+    
 
 }
 
@@ -105,6 +123,69 @@ exports.broeikasSettings = (req,res) => {
     .update(settings)
         .then(doc => {
             return res.json({message:"sensor data updated", res: doc})
+        })
+        .catch(err => {
+            return res.status(500).json({message: 'something went wrong', res: err})
+        })
+}
+
+exports.broeikasAlarm = (req,res) => {
+    let settings = {
+        alarmTime: req.body.alarmTime,
+    }
+    db
+    .collection('broeikassen')
+    .doc(req.params.smartFarmId)
+    .update(settings)
+        .then(doc => {
+            return res.json({message:"Alarm has been set", res: doc})
+        })
+        .catch(err => {
+            return res.status(500).json({message: 'something went wrong', res: err})
+        })
+}
+
+exports.broeikasLightsOff = (req,res) => {
+    let settings = {
+        lightsOff: req.body.lightsOff,
+    }
+    db
+    .collection('broeikassen')
+    .doc(req.params.smartFarmId)
+    .update(settings)
+        .then(doc => {
+            return res.json({message:"Time has been set", res: doc})
+        })
+        .catch(err => {
+            return res.status(500).json({message: 'something went wrong', res: err})
+        })
+}
+
+exports.broeikasLightsOn = (req,res) => {
+    let settings = {
+        lightsOn: req.body.lightsOn,
+    }
+    db
+    .collection('broeikassen')
+    .doc(req.params.smartFarmId)
+    .update(settings)
+        .then(doc => {
+            return res.json({message:"Time has been set", res: doc})
+        })
+        .catch(err => {
+            return res.status(500).json({message: 'something went wrong', res: err})
+        })
+}
+exports.turnLightOff = (req,res)=> {
+    let settings = {
+        lightOn: false
+    }
+    db
+    .collection('broeikassen')
+    .doc(req.params.smartFarmId)
+    .update(settings)
+        .then(doc => {
+            return res.json({message:"Lights have been turned off", res: doc})
         })
         .catch(err => {
             return res.status(500).json({message: 'something went wrong', res: err})
@@ -131,3 +212,46 @@ exports.getVar = (req,res) => {
 
 }
 
+exports.uploadImageBroeikas = (req,res) => {
+    const BusBoy = require('busboy');
+    const path = require('path');
+    const os = require('os');
+    const fs = require('fs');
+    const busboy = new BusBoy({headers: req.headers});
+
+    let imageFileName;
+    let imageToBeUploaded = {};
+
+        busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
+
+            if(mimetype !== 'image/jpeg' && mimetype !== 'image/png'){
+                return res.status(400).json({ error : 'Wrong format'})
+            }
+
+            const imageExtendsion = filename.split('.')[filename.split('.').length - 1];
+            imageFileName = `${Math.round(Math.random()*100000000000)}.${imageExtendsion}`
+            const filepath = path.join(os.tmpdir(), imageFileName); 
+            imageToBeUploaded = {filepath, mimetype};
+            file.pipe(fs.createWriteStream(filepath));
+        })
+        busboy.on('finish', () => {
+            admin.storage().bucket().upload(imageToBeUploaded.filepath, {
+                resumable: false,
+                metadata: {
+                    metadata: {
+                        contentType: imageToBeUploaded.mimetype
+                    }
+                }
+            }).then(() => {
+                const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${config.config.storageBucket}/o/${imageFileName}?alt=media`
+                return db.collection('broeikassen').doc(req.params.smartFarmId).update({imageUrl: imageUrl});
+            })
+            .then(() => {
+                return res.json({ message : "Image uploaded!"})
+            })
+            .catch(err => {
+                return res.status(500).json({error : err})
+            })
+        })
+        busboy.end(req.rawBody);
+}

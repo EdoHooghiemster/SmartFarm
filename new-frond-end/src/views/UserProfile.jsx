@@ -10,12 +10,20 @@ import {
 } from "react-bootstrap";
 import axios from 'axios';
 import { Card } from "components/Card/Card.jsx";
-import { FormInputs } from "components/FormInputs/FormInputs.jsx";
 import { UserCard } from "components/UserCard/UserCard.jsx";
 import Button from "components/CustomButton/CustomButton.jsx";
-import { css } from "@emotion/core";
-import avatar from "assets/img/faces/face-3.jpg";
-import { StatsCard } from "components/StatsCard/StatsCard.jsx";
+import Modal from 'react-modal';
+
+const customStyles = {
+  content : {
+    top                   : '50%',
+    left                  : '50%',
+    right                 : 'auto',
+    bottom                : 'auto',
+    marginRight           : '-50%',
+    transform             : 'translate(-50%, -50%)'
+  }
+};
 
 class UserProfile extends Component {
   constructor(props) {
@@ -26,12 +34,121 @@ class UserProfile extends Component {
         location: "",
         bio : "",
         selectedFile: "",
-        img: null
+        img: null,
+        modalIsOpen: false,
+        modalIsOpen2: false,
+        body: "",
+        soil: "",
+        selectedPlant: "",    
+
     };
     this.handleChange = this.handleChange.bind(this);
+    this.handleChange2 = this.handleChange2.bind(this);
+    this.handleChange3 = this.handleChange3.bind(this);
+
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.closeModalAndSave = this.closeModalAndSave.bind(this);
+    this.openModal = this.openModal.bind(this);
+    this.afterOpenModal = this.afterOpenModal.bind(this);
+    this.closeModal = this.closeModal.bind(this);
+
+    this.openModal2 = this.openModal2.bind(this);
+    this.closeModal2 = this.closeModal2.bind(this);
+
+
+}
+openModal() {
+  this.setState({modalIsOpen: true});
 }
 
+openModal2(plantid){
+  this.setState({modalIsOpen2: true,
+                 selectedPlant : plantid});
+
+}
+
+
+afterOpenModal() {
+// references are now sync'd and can be accessed.
+  this.subtitle.style.color = '#f00';
+}
+closeModal2() {
+  this.setState({modalIsOpen2: false});
+}
+
+
+closeModalAndSave() {
+
+  const body = this.state.body;
+  const header = localStorage.getItem('jwt token')
+  axios({
+    method: 'post',
+    url: 'https://europe-west1-smartbroeikas.cloudfunctions.net/api/createPlant',
+    headers: {Authorization:header},
+    data: {
+      body
+    }
+  })
+  .then(result => {
+      this.setState({
+          body : body
+      })       
+    })
+   .catch(e => {
+    });
+      axios.get('https://europe-west1-smartbroeikas.cloudfunctions.net/api/details', {headers: {Authorization:header}})
+        .then(res => {
+            this.setState({
+                    planten : res.data.Planten,
+                    logged_in: true,
+                    modalIsOpen: false
+            
+            })
+        })         
+        .catch((err) => {
+            if(err == 'Error: Request failed with status code 403'){
+            }
+        });  
+}
+
+closeModalAndSave2() {
+  const desiredSoilMoisture = this.state.soil;
+  const header = localStorage.getItem('jwt token')
+  axios({
+    method: 'post',
+    url: `https://europe-west1-smartbroeikas.cloudfunctions.net/api/desiredSoilMoisture/${this.state.selectedPlant}`,
+    headers: {Authorization:header},
+    data: {
+      desiredSoilMoisture
+    }
+  })
+  .then(result => {
+      this.setState({
+          soil : desiredSoilMoisture
+      })      
+      axios.get('https://europe-west1-smartbroeikas.cloudfunctions.net/api/details', {headers: {Authorization:header}})
+      .then(res => {
+          this.setState({
+                  planten : res.data.Planten,
+                  logged_in: true,
+                  modalIsOpen2: false
+          
+          })
+     
+      })         
+      .catch((err) => {
+          if(err == 'Error: Request failed with status code 403'){
+          }
+      });  
+    })
+   .catch(e => {
+    });
+     
+}
+
+closeModal() {
+  this.setState({modalIsOpen: false});
+}
 handleChange(event) {
   const target = event.target;
   const value =  target.value;
@@ -40,7 +157,14 @@ handleChange(event) {
     [name]: value
   });
 }
+handleChange2(event) {
 
+  this.setState({soil: event.target.value});
+}
+handleChange3(event) {
+
+  this.setState({body: event.target.value});
+}
 fileSelectedHandler = event => {
   this.setState({
     selectedFile: event.target.files[0]
@@ -62,12 +186,10 @@ fileUploadHandler = () => {
     window.location.reload();
   })
   .catch(e => {
-    console.log(e)
   })
 }
 
 handleSubmit = (event) => {
-  alert('A name was submitted: ' + this.state.bio + this.state.location);
   const location = this.state.location;
   const bio = this.state.bio;
   const header = localStorage.getItem('jwt token')
@@ -81,20 +203,34 @@ handleSubmit = (event) => {
     }
   })
   .then(result => {
-      alert('Succes' + result);   
       this.setState({
           bio : bio,
           location: location
       })       
     })
    .catch(e => {
-        alert(header);    
     });
     
   event.preventDefault();
 }
 
-componentDidMount = () => {
+
+
+componentWillMount = () => {
+this.setState({loading: true})
+const test = ["damian", "Edvleespet"];
+const testing = []
+
+  test.forEach(item => {
+    axios.get(`https://europe-west1-smartbroeikas.cloudfunctions.net/api/getimage/${item}`, {})
+    .then(res => {
+      testing.push(res.data)
+    })
+    
+  })
+
+  
+
     const header = localStorage.getItem('jwt token')
 
     axios.get('https://europe-west1-smartbroeikas.cloudfunctions.net/api/details', {headers: {Authorization:header}})
@@ -103,12 +239,12 @@ componentDidMount = () => {
                     user : res.data.credentials,
                     planten : res.data.Planten,
                     logged_in: true,
-                    loading: false,
                     bio: res.data.credentials.bio,
-                    location: res.data.credentials.location,      
-                    img: res.data.credentials.imageUrl              
+                    location: res.data.credentials.location,  
+                    img: res.data.credentials.imageUrl,
+                    loading: false,
+            
             })
-            console.log(this.state)
         })         
         .catch((err) => {
             if(err == 'Error: Request failed with status code 403'){
@@ -130,16 +266,99 @@ componentDidMount = () => {
              </div>
       );
   } else {
+
+    const modal =     <div>
+    <h3> Mijn Planten  <Button  bsStyle="info" onClick={this.openModal}>+ Plant Toevoegen</Button></h3>
+    <Modal
+      isOpen={this.state.modalIsOpen}
+      onAfterOpen={this.afterOpenModal}
+      onRequestClose={this.closeModal}
+      style={customStyles}
+      contentLabel="Example Modal"
+    >
+
+      <h2 ref={subtitle => this.subtitle = subtitle}></h2>
+      <h2>Plant toevoegen</h2>
+      <form>
+      <br></br>
+
+      <ControlLabel>Naam</ControlLabel>
+          <FormControl
+                required
+                            name="location"
+                            value={this.state.body} 
+                            onChange={this.handleChange3}
+                            rows="1"
+                            componentClass="textarea"
+                            bsClass="form-control"
+                            placeholder=""
+          />
+          <br></br>
+      <Button bsStyle="info" onClick={this.closeModalAndSave} pullRight fill type="submit">
+          Opslaan
+      </Button>
+      
+      <Button bsStyle="info" onClick={this.closeModal} >
+          Sluiten
+      </Button>
+      </form>
+      <br></br>
+    
+    </Modal>
+   </div>
+        const modal2 =     <div>
+        <Modal
+          isOpen={this.state.modalIsOpen2}
+          onAfterOpen={this.afterOpenModal}
+          onRequestClose={this.closeModal2}
+          style={customStyles}
+          contentLabel="Example Modal"
+        >
+    
+          <h2 ref={subtitle => this.subtitle = subtitle}></h2>
+          <h2>Gewenste grondvochtigheid aanpassen</h2>
+          <form>
+          <br></br>
+    
+          <ControlLabel>Grondvochtigheid in %</ControlLabel>
+              <FormControl
+                    required
+                                name="soil"
+                                value={this.state.soil} 
+                                onChange={this.handleChange2}
+                                rows="1"
+                                componentClass="textarea"
+                                bsClass="form-control"
+                                placeholder=""
+              />
+              <br></br>
+          <Button bsStyle="info" onClick={()=>{this.closeModalAndSave2()}} pullRight fill type="submit">
+              Opslaan
+          </Button>
+          
+          <Button bsStyle="info" onClick={this.closeModal2} pullLeft>
+              Sluiten
+          </Button>
+          </form>
+          <br></br>
+  
+        </Modal>
+       </div>
+
+
     const date = this.state.user.created.split(" ")
     const plants = this.state.planten.map((plant) => 
     <Col lg={3} sm={6}>
       <Card
                 
-                title={<div> <i className="pe-7s-leaf"/> {plant.body}  </div> }
+                title={<div> <i className="pe-7s-leaf"/> {plant.body}     </div> }
                 content={
                   <div>
                   <p>Likes: {plant.likeCount} </p>
-                  <p>Grondvochtigheid: {plant.currentSoilMoisture}</p> 
+                  <p>Huidige Grondvochtigheid:<br></br> {plant.currentSoilMoisture}</p> 
+                  <p>Gewenste Grondvochtigheid: <Button onClick={() => {this.openModal2(plant.Id)}}  >Aanpassen</Button><br></br> {plant.desiredSoilMoisture}</p> 
+
+                 <br></br>
                  </div> 
 
                 }
@@ -246,10 +465,10 @@ componentDidMount = () => {
                 }
               />
             </Col>
-
-            <Col md={8}>
+                {modal}
+                {modal2}
+                <br></br>
              {plants}
-            </Col>
 
                
 
