@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Grid, Row, Col, Card } from "react-bootstrap";
+import { Grid, Row, Col } from "react-bootstrap";
 import '../assets/css/feed.css';
 import axios from 'axios';
 import { css } from "@emotion/core";
@@ -103,11 +103,6 @@ getPlants = async () => {
     }
 }
 
-componentDidMount = () => {
-    if( localStorage.getItem('jwt token') == null ){
-        this.redirect();
-    }
-}
 
 getCurrentLikes() {
   this.setState({ loading: true })
@@ -145,7 +140,7 @@ logPlants = async () => {
 
         response.data.map(function(item) {
           allPlants.push(item.plant.id); // For like check
-            listTest.push(item);
+          listTest.push(item);
         })
  
         const resultLikedPlants = allPlants.filter(element => this.state.liked.includes(element));
@@ -183,12 +178,14 @@ logPlants = async () => {
     }
   }
 
+  
   componentWillMount() {
     this.logPlants();
     this.getCurrentLikes();
   }
 
   componentDidMount() {
+  
     this._isMounted = true;
     if( localStorage.getItem('jwt token') === null ){
         this.redirect();
