@@ -48,7 +48,8 @@ if(window.location.pathname === '/admin/login' ||  window.location.pathname === 
           <Redirect from="/" to="/admin/dashboard" />
         </Switch>
       </BrowserRouter>,
-      document.getElementById("root")
+      document.getElementById("root"),
+      document.getElementById('main')
     );
 }
 
