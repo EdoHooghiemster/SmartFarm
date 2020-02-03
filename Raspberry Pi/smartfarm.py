@@ -1,6 +1,9 @@
 from OpenGL.GL import * # pylint: disable=W0614
 from OpenGL.GLUT import * # pylint: disable=W0614
 from datetime import datetime
+from datetime import timedelta
+from timeloop import Timeloop
+
 import RPi.GPIO as gp
 import Adafruit_GPIO.SPI as SPI
 import Adafruit_MCP3008
@@ -26,6 +29,8 @@ V3_PIN = 26
 V4_PIN = 20
 LIGHT_PIN = 21
 SOIL_PIN = 6
+
+tl = Timeloop()
 
 class Sensor:
     def __init__(self, name, unit):
@@ -111,9 +116,11 @@ class Main:
         self.sensors = []
         s = SoilMoistureSensor("SMS1", "%", mcp, 0)
         self.sensors.append(s)
-        s = SoilMoistureSensor("SMS2", "%", mcp, 1)
+        s = SoilMoistureSensor("SMS2", "%", mcp, 3)
         self.sensors.append(s)
-        s = SoilMoistureSensor("SMS3", "%", mcp, 2)
+        s = SoilMoistureSensor("SMS5", "%", mcp, 1)
+        self.sensors.append(s)
+        s = SoilMoistureSensor("SMS6", "%", mcp, 2)
         self.sensors.append(s)
         s = LightSensor("Light", "lux", mcp, 7)
         self.sensors.append(s)
@@ -135,10 +142,12 @@ class Main:
         a = Actuator("soilSensors", SOIL_PIN)
         self.actuators.append(a)
         self.lightOn = False
-        boxes = self.login()
-        self.interface = Interface(self, boxes)
+        self.token = self.getToken()
+        self.boxes = self.getBoxes()
+        tl.start()
+        self.interface = Interface(self.boxes)
 
-    def login(self):
+    def getToken(self):
         url = URL + "login"
         data = {
             "email": "damian@gmail.com",
@@ -148,10 +157,12 @@ class Main:
         if res.status_code != 200:
             print("Unable to log in")
             return
-        token = res.text[1:-1]
+        return res.text[1:-1]
+
+    def getBoxes(self):
         url = URL + "details"
         headers = {
-            "Authorization": "Bearer " + token
+            "Authorization": "Bearer " + self.token
         }
         res = requests.get(url, headers = headers)
         if res.status_code != 200:
@@ -161,11 +172,12 @@ class Main:
         broeikas = userDetails["Broeikas"][0]
         self.farmID = broeikas["Id"]
         boxes = []
+        sensors = [0, 3, -1, -1, 1, 2]
         for i in range(1, 7):
             plantID = broeikas["dock" + str(i)]
             if str(plantID) != "0":
                 big = (i == 1) # nog aanpassen, uit stekker halen
-                boxes.append(Box(i, big, token, plantID))
+                boxes.append(Box(i, big, self.token, plantID, sensors[i]))
         return boxes
 
     def rain(self, valve):
@@ -205,13 +217,45 @@ class Main:
         else:
             print(res.text)
 
+    def postPicture(self):
+        image = "images/image.jpg"
+        os.system("raspistill -n -t 1000 -o " + image)
+        headers = {
+	        "Authorization": "Bearer " + self.token
+        }
+        with open(image, mode = "rb") as file: 
+            imageData = file.read()
+        files = {"file": (image, imageData, "image/jpg")}
+        url = URL + "broeikas/image/" + self.farmID
+        res = requests.post(url, headers = headers, files = files)
+        if res.status_code != 200:
+            print("Error posting picture")
+
+    @tl.job(interval = timedelta(seconds=10))
+    def everyHour(self):
+        for i in self.boxes:
+            i.checkWatering(self)
+        self.postPicture()
+
+    @tl.job(interval = timedelta(seconds=2))
+    def everyMinute(self):
+        data = self.readSensors()
+        for i in self.boxes:
+            i.soilHumidity = data[i.sensor]
+            i.reportPlantData()
+        self.interface.light = data[3]
+        self.interface.temp = data[4]
+        self.interface.hum = data[5]
+        self.reportSensors(data)
+
 class Box:
-    def __init__(self, dock, big, token, plantID):
+    def __init__(self, dock, big, token, plantID, sensor):
         self.x = (dock - 1) // 2
         self.y = (dock - 1) % 2
         self.big = big
         self.token = token
         self.plantID = plantID
+        self.sensor = sensor
         self.name = ""
         self.soilHumidity = 0
         self.plantGrowth = 0
@@ -267,13 +311,11 @@ class Box:
             print(res.text)
 
 class Interface:
-    def __init__(self, main, boxes):
-        self.main = main
+    def __init__(self, boxes):
         self.boxes = boxes
         self.temp = 21.01234567
         self.hum = 65
         self.light = 30
-        self.lastHour = datetime.now().minute # change to hour
         glutInit()
         #glutInitDisplayMode(GLUT_MULTISAMPLE)
         #glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT)
@@ -560,19 +602,7 @@ class Interface:
         glFlush()
 
     def update(self, var):
-        data = self.main.readSensors()
-        thisHour = datetime.now().minute # change to hour
-        for i in range(len(self.boxes)):
-            self.boxes[i].soilHumidity = data[i]
-            self.boxes[i].reportPlantData()
-            if self.lastHour != thisHour:
-                self.boxes[i].checkWatering(self.main)
-        self.light = data[3]
-        self.temp = data[4]
-        self.hum = data[5]
-        self.lastHour = thisHour
         glutPostRedisplay()
-        self.main.reportSensors(data)
         glutTimerFunc(1000, self.update, 0)
 
     def click(self, button, state, x, y):
