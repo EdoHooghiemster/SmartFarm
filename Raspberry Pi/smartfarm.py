@@ -10,6 +10,7 @@ import Adafruit_MCP3008
 import Adafruit_DHT as DHT
 from time import sleep
 import requests
+from PIL import Image
 
 WINDOW_WIDTH = 480
 WINDOW_HEIGHT = 320
@@ -18,19 +19,18 @@ CELL_WIDTH = (WINDOW_WIDTH - 10) / 3
 CELL_HEIGHT = (WINDOW_HEIGHT - TITLE_HEIGHT - 10) / 2
 
 RAINTIME = 1.0
+IMAGE = "images/image.jpg"
 URL = "https://europe-west1-smartbroeikas.cloudfunctions.net/api/"
 
 SPI_PORT = 0
 SPI_DEVICE = 0
 DHT_PIN = 14
-V1_PIN = 19
-V2_PIN = 16
+V1_PIN = 21
+V2_PIN = 20
 V3_PIN = 26
-V4_PIN = 20
-LIGHT_PIN = 21
+V4_PIN = 19
+LIGHT_PIN = 16
 SOIL_PIN = 6
-
-tl = Timeloop()
 
 class Sensor:
     def __init__(self, name, unit):
@@ -144,8 +144,12 @@ class Main:
         self.lightOn = False
         self.token = self.getToken()
         self.boxes = self.getBoxes()
+        tl = Timeloop()
+        tl._add_job(self.everyHour, timedelta(seconds = 60))
+        tl._add_job(self.everyMinute, timedelta(seconds = 10))
         tl.start()
         self.interface = Interface(self.boxes)
+        self.interface.start()
 
     def getToken(self):
         url = URL + "login"
@@ -172,12 +176,12 @@ class Main:
         broeikas = userDetails["Broeikas"][0]
         self.farmID = broeikas["Id"]
         boxes = []
-        sensors = [0, 3, -1, -1, 1, 2]
+        sensors = [0, 1, -1, -1, 2, 3]
         for i in range(1, 7):
             plantID = broeikas["dock" + str(i)]
             if str(plantID) != "0":
                 big = (i == 1) # nog aanpassen, uit stekker halen
-                boxes.append(Box(i, big, self.token, plantID, sensors[i]))
+                boxes.append(Box(i, big, self.token, plantID, sensors[i - 1]))
         return boxes
 
     def rain(self, valve):
@@ -206,52 +210,70 @@ class Main:
 
     def reportSensors(self, data):
         jsonData = {
-            "lightIntensity" : data[3],
-            "temperature": data[4],
-            "humidity": data[5]
+            "lightIntensity" : data[4],
+            "temperature": data[5],
+            "humidity": data[6]
         }
         url = URL + "sensordatabroeikas/" + self.farmID
         res = requests.post(url, data = jsonData)
         if res.status_code != 200:
             print("Error posting data")
-        else:
-            print(res.text)
+
+    def takePicture(self):
+        os.system("raspistill -n -t 1000 -o " + IMAGE)
 
     def postPicture(self):
-        image = "images/image.jpg"
-        os.system("raspistill -n -t 1000 -o " + image)
         headers = {
 	        "Authorization": "Bearer " + self.token
         }
-        with open(image, mode = "rb") as file: 
+        with open(IMAGE, mode = "rb") as file: 
             imageData = file.read()
-        files = {"file": (image, imageData, "image/jpg")}
+        files = {"file": ("myFarm.jpg", imageData, "image/jpeg")}
         url = URL + "broeikas/image/" + self.farmID
         res = requests.post(url, headers = headers, files = files)
         if res.status_code != 200:
             print("Error posting picture")
 
-    @tl.job(interval = timedelta(seconds=10))
+    def countPixels(self, img, region):
+        box = img.crop(region) # selecteer regio
+        boxHSV = box.convert("HSV") # converteer naar HSV-kleurruimte (H = hue)
+        his = boxHSV.histogram() # genereer lijst van aantal pixels per kleur
+        return min(100, sum(his[70:150]) // 3750) # groen zit tussen de H = 70 en H = 100
+
+    def measurePlantGrowth(self):
+        regions = [
+            (1763, 1160, 2529, 1896),
+            (1751, 262, 2518, 1032),
+            (902, 1196, 1689, 1942),
+            (854, 278, 1644, 1044),
+            (2, 1166, 793, 1930),
+            (11, 266, 800, 1055)]
+        self.takePicture()
+        img = Image.open(IMAGE)
+        return [self.countPixels(img, i) for i in regions]
+
+    def everyMinute(self):
+        plantGrowth = self.measurePlantGrowth()
+        data = self.readSensors()
+        for i in self.boxes:
+            i.plantGrowth = plantGrowth[i.dock - 1]
+            i.soilHumidity = data[i.sensor]
+            i.reportPlantData()
+        self.interface.light = data[4]
+        self.interface.temp = data[5]
+        self.interface.hum = data[6]
+        self.reportSensors(data)
+
     def everyHour(self):
         for i in self.boxes:
             i.checkWatering(self)
         self.postPicture()
 
-    @tl.job(interval = timedelta(seconds=2))
-    def everyMinute(self):
-        data = self.readSensors()
-        for i in self.boxes:
-            i.soilHumidity = data[i.sensor]
-            i.reportPlantData()
-        self.interface.light = data[3]
-        self.interface.temp = data[4]
-        self.interface.hum = data[5]
-        self.reportSensors(data)
-
 class Box:
     def __init__(self, dock, big, token, plantID, sensor):
+        self.dock = dock
         self.x = (dock - 1) // 2
-        self.y = (dock - 1) % 2
+        self.y = 1 - (dock - 1) % 2 - (1 if big else 0)
         self.big = big
         self.token = token
         self.plantID = plantID
@@ -260,7 +282,7 @@ class Box:
         self.soilHumidity = 0
         self.plantGrowth = 0
         self.desiredHumidity = 0
-        self.getPlantData() 
+        self.getPlantData()
 
     def getPlantData(self):
         url = URL + "plant/" + self.plantID
@@ -307,8 +329,6 @@ class Box:
         res = requests.post(url, data = data)
         if res.status_code != 200:
             print("Error posting data")
-        else:
-            print(res.text)
 
 class Interface:
     def __init__(self, boxes):
@@ -316,6 +336,8 @@ class Interface:
         self.temp = 21.01234567
         self.hum = 65
         self.light = 30
+        
+    def start(self):
         glutInit()
         #glutInitDisplayMode(GLUT_MULTISAMPLE)
         #glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT)
