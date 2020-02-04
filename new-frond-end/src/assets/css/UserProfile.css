@@ -1,6 +1,6 @@
 .profilepic{
-    width: 7vw!important;
-    height: 12vh !important;
+    width: 10vw!important;
+    height: auto !important;
 }
 
 .broeikas{
@@ -42,4 +42,8 @@
 
 .margright{
     margin-right: 10px;
+}
+
+.broeikasimg {
+    width: 25vw !important;
 }

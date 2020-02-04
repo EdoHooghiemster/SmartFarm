@@ -349,12 +349,17 @@ logPlants = async () => {
 
     const comments = this.state.allComments;
     const plants = this.state.plants.map((item, index) => {
-      return (
+
+    var imgUser = item.plant.imgUser
+    if (imgUser == null){
+      imgUser = "https://www.key2.com.au/wp-content/uploads/2019/02/indoor-rubber-plant.jpg"
+    }
+    return (
           <div>
               <Row key={index} className="plant-box">
                 <Col key={item.plant.id} md={12}>
                   <div className="plant-image">
-                    <img src="https://www.key2.com.au/wp-content/uploads/2019/02/indoor-rubber-plant.jpg" />
+                    <img src={imgUser} />
                     {/* <img src={item.plant.imgUser} /> */}
                   </div>
                   <div className="plant-title">
@@ -433,7 +438,6 @@ logPlants = async () => {
                     <div className="modal-main-outer">
                       <div className="modal-main-inner">
                         <h3>Plant detail pagina</h3>
-                        <h6>Loaded id: {this.state.loadedPlantId.plantId}</h6>
                         <table id="loaded-plant-table">
                           <tbody>
                           <tr>
