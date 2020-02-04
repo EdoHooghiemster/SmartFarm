@@ -83,7 +83,7 @@ unDockPlant = (dockNumber) => {
 
   axios({
     method: 'post',
-    url: `https://europe-west1-smartbroeikas.cloudfunctions.net/api/dock/"0"/${dockNumber}/${broeikasId}`,
+    url: `https://europe-west1-smartbroeikas.cloudfunctions.net/api/dock/0/${dockNumber}/${broeikasId}`,
     headers: {Authorization:header},
   })
   .then(result => {
@@ -353,7 +353,7 @@ else{}
                 <div>
                  
                   <br></br>
-                  <img alt="" src={broei.imageUrl}/>
+                  <img alt="" className="broeikasimg" src={broei.imageUrl}/>
                   <br></br>
                   <br></br>
                   <br></br>

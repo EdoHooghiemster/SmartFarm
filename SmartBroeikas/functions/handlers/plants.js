@@ -39,7 +39,6 @@ exports.getImageFeed = (req, res) => {
 exports.getPlants = (req, res) => {
 db
 .collection('plants')
-.orderBy('createdAt', 'desc')
 .get()
 .then(data => {
     let plants = [];
@@ -81,18 +80,26 @@ exports.createPlant = (req, res) => {
         desiredSoilMoisture: 0,
         growthPercentage: 0
     }
-    db
-    .collection('plants')
-    .add(newPlant)
-    .then((doc) => {
-        const resPlant = newPlant;
-        resPlant.plantId = doc.id
-        res.json(resPlant);
+    
+    db.collection('users').doc(req.user.handle).get()
+    .then(data => {
+        newPlant.imgUser = data.data().imageUrl
+
+        db
+        .collection('plants')
+        .add(newPlant)
+        .then((doc) => {
+            const resPlant = newPlant;
+            resPlant.plantId = doc.id
+            res.json(resPlant);
+        })
+        .catch((err) => {
+            res.status(500).json({ error: 'something went wrong'})
+            console.log(err)
+        }) 
     })
-    .catch((err) => {
-        res.status(500).json({ error: 'something went wrong'})
-        console.log(err)
-    }) 
+
+  
 }
 
 exports.commentOnPlant = (req, res) => {
