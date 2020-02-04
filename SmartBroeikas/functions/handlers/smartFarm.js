@@ -192,6 +192,23 @@ exports.turnLightOff = (req,res)=> {
         })
 }
 
+exports.lightSettings = (req,res)=> {
+    let settings = {
+        ldr: req.body.ldr,
+        LedColor: req.body.LedColor
+    }
+    db
+    .collection('broeikassen')
+    .doc(req.params.smartFarmId)
+    .update(settings)
+        .then(doc => {
+            return res.json({message:"Lights have been turned off", res: doc})
+        })
+        .catch(err => {
+            return res.status(500).json({message: 'something went wrong', res: err})
+        })
+}
+
 exports.getVar = (req,res) => {
     db.collection('broeikassen').doc('JYRUfG7fNGNIANd4AE6u').get()
     .then(doc => {
@@ -211,6 +228,9 @@ exports.getVar = (req,res) => {
 
 
 }
+
+
+
 
 exports.uploadImageBroeikas = (req,res) => {
     const BusBoy = require('busboy');

@@ -30,14 +30,54 @@ class Dashboard extends Component {
         dockedplants: null,
         modalIsOpen: false,
         loading: true,
-        selectedDock: ""
+        selectedDock: "",
+        value: '',
+        ldr: ''
     };
     this.openModal = this.openModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
-    this.test = this.test.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleChange2 = this.handleChange2.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+
 }
 
+handleChange(event) {
+  this.setState({value: event.target.value});
+}
+handleChange2(event) {
+  this.setState({ldr: event.target.value});
+}
 
+handleSubmit(event) {
+
+  const LedColor = this.state.value;
+  const ldr = this.state.ldr
+  const header = localStorage.getItem('jwt token')
+  axios({
+    method: 'post',
+    url: `https://europe-west1-smartbroeikas.cloudfunctions.net/api/broeikas/lightsettings/${this.state.broeikas[0].Id}`,
+    headers: {Authorization:header},
+    data: {
+      LedColor,
+      ldr
+    }
+  })
+  .then(result => {
+      this.setState({
+          ldr : ldr,
+          value: LedColor,
+          modalIsOpen: false
+
+      })       
+    })
+   .catch(e => {
+    });
+    
+  event.preventDefault();
+
+
+}
 
 closeModal() {
   this.setState({modalIsOpen: false});
@@ -46,12 +86,7 @@ openModal() {
   this.setState({modalIsOpen: true});
 }
 
-test = (dockNumber ) => {
-  this.setState({
-    modalIsOpen: true,
-    selectedDock: dockNumber
-  });
-}
+
 
 dockPlant = (plantId) => {
   const broeikasId = this.state.broeikas[0].Id
@@ -83,7 +118,7 @@ unDockPlant = (dockNumber) => {
 
   axios({
     method: 'post',
-    url: `https://europe-west1-smartbroeikas.cloudfunctions.net/api/dock/"0"/${dockNumber}/${broeikasId}`,
+    url: `https://europe-west1-smartbroeikas.cloudfunctions.net/api/dock/0/${dockNumber}/${broeikasId}`,
     headers: {Authorization:header},
   })
   .then(result => {
@@ -149,42 +184,7 @@ unDockPlant = (dockNumber) => {
              </div>
       );
   } else {
-    const plants = 
-    <div>
-    <Modal
-      isOpen={this.state.modalIsOpen}
-      onAfterOpen={this.afterOpenModal}
-      onRequestClose={this.closeModal}
-      style={customStyles}
-      contentLabel="Example Modal"
-    >
-      {this.state.plants.map((plant) => 
-      <Col lg={3} sm={6}>
-      <Card
-                
-                title={<div> <i className="pe-7s-leaf"/> {plant.body}     </div> }
-                content={
-                  <div>
-                  <p>Likes: {plant.likeCount} </p>
-                  <p>Grondvochtigheid:<br></br> {plant.currentSoilMoisture}</p> 
-                  <p>Gewenste:<br></br> {plant.desiredSoilMoisture}</p> 
-                    <Button bsStyle="info" pullRight onClick={() => {this.dockPlant(plant.Id)}} >
-                      Dock
-                    </Button>
-                 </div> 
-                }
-                statsIcon={<i className="fa fa-calendar-o" />}
-                statsIconText={plant.createdAt}
-              />
-             
-      </Col>
-      )}
-      <Button bsStyle="info" onClick={this.closeModal} >
-          Sluiten
-      </Button>
-    
-    </Modal>
-    </div>
+   
     
     const dockedplants = this.state.dockedplants
     let dock1 =       <Col lg={3} sm={5}><Card title="Dock 1" content={
@@ -332,9 +332,46 @@ unDockPlant = (dockNumber) => {
                         }/>
                     </Col>
     }
-    
+    const modal = 
+    <div>
+        <Button  bsStyle="info" onClick={this.openModal}>Lichtinstellingen</Button>
+        <Modal
+          isOpen={this.state.modalIsOpen}
+          onRequestClose={this.closeModal}
+          style={customStyles}
+          contentLabel="Example Modal"
+        >
 
-else{}
+      <form onSubmit={this.handleSubmit}>
+        <label>
+          <h4>Kies een kleur</h4>
+          <select value={this.state.value} onChange={this.handleChange}>
+            <option value="rood">rood</option>
+            <option value="blauw">blauw</option>
+          </select>
+        </label>
+        <br></br>
+        <label>
+          <h4>ldr waarde 1 - 100</h4>
+
+          <input
+            name="ldr"
+            type="ldr"
+            value={this.state.ldr}
+            onChange={this.handleChange2} />
+        </label>
+      <br></br>
+      <br></br>
+
+        <Button type="submit" value="Submit">Opslaan</Button>
+      </form>
+
+        </Modal>
+
+        
+
+       </div>
+
     return (
       
       this.state.broeikas.map((broei) =>
@@ -344,7 +381,6 @@ else{}
             <Row>
             <Col md={4}>
             <h3>Smart Farm </h3>
-      {plants}
             <Card
               avatar={this.state.img}
 
@@ -353,7 +389,7 @@ else{}
                 <div>
                  
                   <br></br>
-                  <img alt="" src={broei.imageUrl}/>
+                  <img alt="" className="broeikasimg" src={broei.imageUrl}/>
                   <br></br>
                   <br></br>
                   <br></br>
@@ -365,7 +401,8 @@ else{}
                   <p className="margright">Luchtvochtigheid: {broei.humidity}</p>
                   <p className="margright">Temperatuur: {broei.temperature} </p>   
                 </Col>
-                  
+                {modal}
+
                   <AlarmClock lightOn={broei.lightsOn} lightOff={broei.lightsOff} nextAlarm={broei.alarmTime} id={broei.Id}/>
                 </div>
               }
