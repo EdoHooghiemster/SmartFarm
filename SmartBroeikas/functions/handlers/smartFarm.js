@@ -194,7 +194,7 @@ exports.turnLightOff = (req,res)=> {
 
 exports.lightSettings = (req,res)=> {
     let settings = {
-        ldr: req.body.ldr,
+        minimumLightIntensity: req.body.minimumLightIntensity,
         LedColor: req.body.LedColor
     }
     db

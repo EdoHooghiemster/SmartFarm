@@ -71,12 +71,10 @@ class AlarmClock extends React.Component {
           }
         })
         .then(result => {
-          alert("succes")          
           this.setState({
               alarmTime : lightsOff
             })       
           }).catch(e => {
-            alert("failed")
           })
     }
 
@@ -92,12 +90,10 @@ class AlarmClock extends React.Component {
         }
       })
       .then(result => {
-        alert("succes")          
         this.setState({
             alarmTime2 : lightsOn
           })       
         }).catch(e => {
-          alert("failed")
         })
       
       
@@ -107,16 +103,13 @@ class AlarmClock extends React.Component {
 
        
         if(this.state.currentTime === this.state.nextAlarm) {
-          alert("its time!");
           axios({
             method: 'post',
             url: `https://europe-west1-smartbroeikas.cloudfunctions.net/api/broeikas/turnlightoff/${this.props.id}`,
           })
           .then(res => {
-            alert(res)
           })
           .catch(e => {
-            alert(e)
           })
         } else {
           console.log("not yet");

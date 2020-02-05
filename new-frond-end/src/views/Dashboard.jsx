@@ -7,6 +7,8 @@ import ReactLoading from 'react-loading';
 import AlarmClock from '../components/Clock/Clock.jsx'
 import { Card } from "components/Card/Card.jsx";
 
+
+
 import Modal from 'react-modal';
 const customStyles = {
   content : {
@@ -31,14 +33,17 @@ class Dashboard extends Component {
         modalIsOpen: false,
         loading: true,
         selectedDock: "",
-        value: '',
-        ldr: ''
+        value: '',        
+        modalIsOpen2: false,
+        minimumLightIntensity: 0
     };
     this.openModal = this.openModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
+    this.closeModal2 = this.closeModal2.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleChange2 = this.handleChange2.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.test = this.test.bind(this);
 
 }
 
@@ -46,13 +51,19 @@ handleChange(event) {
   this.setState({value: event.target.value});
 }
 handleChange2(event) {
-  this.setState({ldr: event.target.value});
+  this.setState({minimumLightIntensity: event.target.value});
 }
+
+test = (dockNumber ) => {
+  this.setState({
+    modalIsOpen2: true,
+    selectedDock: dockNumber
+  })}
 
 handleSubmit(event) {
 
   const LedColor = this.state.value;
-  const ldr = this.state.ldr
+  const minimumLightIntensity = this.state.minimumLightIntensity
   const header = localStorage.getItem('jwt token')
   axios({
     method: 'post',
@@ -60,12 +71,12 @@ handleSubmit(event) {
     headers: {Authorization:header},
     data: {
       LedColor,
-      ldr
+      minimumLightIntensity
     }
   })
   .then(result => {
       this.setState({
-          ldr : ldr,
+          minimumLightIntensity : minimumLightIntensity,
           value: LedColor,
           modalIsOpen: false
 
@@ -81,6 +92,9 @@ handleSubmit(event) {
 
 closeModal() {
   this.setState({modalIsOpen: false});
+}
+closeModal2() {
+  this.setState({modalIsOpen2: false});
 }
 openModal() {
   this.setState({modalIsOpen: true});
@@ -103,7 +117,7 @@ dockPlant = (plantId) => {
       this.setState({
           dockedplants: res.data,
           loading: false,
-          modalIsOpen: false
+          modalIsOpen2: false
         })
 
     })       
@@ -184,8 +198,43 @@ unDockPlant = (dockNumber) => {
              </div>
       );
   } else {
-   
+    const plants = 
+    <div>
+    <Modal
+      isOpen={this.state.modalIsOpen2}
+      onAfterOpen={this.afterOpenModal}
+      onRequestClose={this.closeModal}
+      style={customStyles}
+      contentLabel="Example Modal"
+    >
+      {this.state.plants.map((plant) => 
+      <Col lg={3} sm={6}>
+      <Card
+                
+                title={<div> <i className="pe-7s-leaf"/> {plant.body}     </div> }
+                content={
+                  <div>
+                  <p>Likes: {plant.likeCount} </p>
+                  <p>Grondvochtigheid:<br></br> {plant.currentSoilMoisture}</p> 
+                  <p>Gewenste:<br></br> {plant.desiredSoilMoisture}</p> 
+                    <Button bsStyle="info" pullRight onClick={() => {this.dockPlant(plant.Id)}} >
+                      Dock
+                    </Button>
+                 </div> 
+                }
+                statsIcon={<i className="fa fa-calendar-o" />}
+                statsIconText={plant.createdAt}
+              />
+             
+      </Col>
+      )}
+      <Button bsStyle="info" onClick={this.closeModal2} >
+          Sluiten
+      </Button>
     
+    </Modal>
+    </div>
+
     const dockedplants = this.state.dockedplants
     let dock1 =       <Col lg={3} sm={5}><Card title="Dock 1" content={
                             <div>
@@ -201,7 +250,7 @@ unDockPlant = (dockNumber) => {
     if(this.state.dockedplants.dock1 != null){
       dock1 =         <Col lg={3} sm={5}> <Card title={<div>Dock 1 | {dockedplants.dock1.body}</div>} content={
                           <div>
-                          <p>Gewenste grondvochtigheid:<br></br> {dockedplants.dock1.desiredSoilMoisture} %</p> 
+                          <p>Groei percentage:<br></br> {dockedplants.dock1.growthPercentage} %</p> 
                           <p>Huidige grondvochtigheid: <br></br> {dockedplants.dock1.currentSoilMoisture} %</p> 
                           <Button bsStyle="info" onClick={() => {this.unDockPlant('dock1')}}>
                                Undock
@@ -227,7 +276,7 @@ unDockPlant = (dockNumber) => {
     if(this.state.dockedplants.dock2 != null){
       dock2 =         <Col lg={3} sm={5}> <Card title={<div>Dock 2 | {dockedplants.dock2.body}</div>} content={
                           <div>
-                          <p>Gewenste grondvochtigheid:<br></br> {dockedplants.dock2.desiredSoilMoisture} %</p> 
+                          <p>Groei percentage:<br></br> {dockedplants.dock2.growthPercentage} %</p> 
                           <p>Huidige grondvochtigheid: <br></br> {dockedplants.dock2.currentSoilMoisture} %</p> 
                           <Button bsStyle="info" onClick={() => {this.unDockPlant('dock2')}}>
                                Undock
@@ -252,7 +301,7 @@ unDockPlant = (dockNumber) => {
     if(this.state.dockedplants.dock3 != null){
       dock3 =         <Col lg={3} sm={5}> <Card title={<div>Dock 3 | {dockedplants.dock3.body}</div>} content={
                           <div>
-                          <p>Gewenste grondvochtigheid:<br></br> {dockedplants.dock3.desiredSoilMoisture} %</p> 
+                          <p>Groei percentage:<br></br> {dockedplants.dock3.growthPercentage} %</p> 
                           <p>Huidige grondvochtigheid: <br></br> {dockedplants.dock3.currentSoilMoisture} %</p> 
                           <Button bsStyle="info" onClick={() => {this.unDockPlant('dock3')}}>
                                Undock
@@ -276,7 +325,7 @@ unDockPlant = (dockNumber) => {
     if(this.state.dockedplants.dock4 != null){
       dock4 =         <Col lg={3} sm={5}> <Card title={<div>Dock 4 | {dockedplants.dock4.body}</div>} content={
                           <div>
-                          <p>Gewenste grondvochtigheid:<br></br> {dockedplants.dock4.desiredSoilMoisture} %</p> 
+                          <p>Groei percentage:<br></br> {dockedplants.dock4.growthPercentage} %</p> 
                           <p>Huidige grondvochtigheid: <br></br> {dockedplants.dock4.currentSoilMoisture} %</p> 
                           <Button bsStyle="info" onClick={() => {this.unDockPlant('dock4')}}>
                                Undock
@@ -300,7 +349,7 @@ unDockPlant = (dockNumber) => {
     if(this.state.dockedplants.dock5 != null){
       dock5 =         <Col lg={3} sm={5}> <Card title={<div>Dock 5 | {dockedplants.dock5.body}</div>} content={
                           <div>
-                          <p>Gewenste grondvochtigheid:<br></br> {dockedplants.dock5.desiredSoilMoisture} %</p> 
+                          <p>Groei percentage:<br></br> {dockedplants.dock5.growthPercentage} %</p> 
                           <p>Huidige grondvochtigheid: <br></br> {dockedplants.dock5.currentSoilMoisture} %</p> 
                           <Button bsStyle="info" onClick={() => {this.unDockPlant('dock5')}}>
                                Undock
@@ -323,7 +372,7 @@ unDockPlant = (dockNumber) => {
     if(this.state.dockedplants.dock6 != null){
       dock6 =         <Col lg={3} sm={5}> <Card title={<div>Dock 6 | {dockedplants.dock6.body}</div>} content={
                           <div>
-                          <p>Gewenste grondvochtigheid:<br></br> {dockedplants.dock6.desiredSoilMoisture} %</p> 
+                          <p>Groei percentage:<br></br> {dockedplants.dock6.growthPercentage} %</p> 
                           <p>Huidige grondvochtigheid:<br></br> {dockedplants.dock6.currentSoilMoisture} %</p> 
                           <Button bsStyle="info" onClick={() => {this.unDockPlant('dock6')}}>
                                Undock
@@ -357,7 +406,7 @@ unDockPlant = (dockNumber) => {
           <input
             name="ldr"
             type="ldr"
-            value={this.state.ldr}
+            value={this.state.minimumLightIntensity}
             onChange={this.handleChange2} />
         </label>
       <br></br>
@@ -381,6 +430,7 @@ unDockPlant = (dockNumber) => {
             <Row>
             <Col md={4}>
             <h3>Smart Farm </h3>
+            {plants}
             <Card
               avatar={this.state.img}
 
@@ -397,9 +447,15 @@ unDockPlant = (dockNumber) => {
                   <br></br>
                 <Col className="data">
                   <p className="margright">Kleur: {broei.LedColor} </p> 
-                  <p className="margright">Licht: {broei.lightIntensity}</p>  
-                  <p className="margright">Luchtvochtigheid: {broei.humidity}</p>
-                  <p className="margright">Temperatuur: {broei.temperature} </p>   
+                  <p className="margright">Lichtintensiteit: {broei.lightIntensity.slice(0,5)}</p>  
+
+                </Col>
+
+                <br></br>
+                <Col className="data">
+
+                <p className="margright">Luchtvochtigheid: {broei.humidity.slice(0,5)}</p>
+                <p className="margright">Temperatuur: {broei.temperature.slice(0,5)} </p>   
                 </Col>
                 {modal}
 
