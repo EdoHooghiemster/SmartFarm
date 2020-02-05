@@ -29,7 +29,7 @@ V1_PIN = 21
 V2_PIN = 20
 V3_PIN = 26
 V4_PIN = 19
-LIGHT_PIN = 16
+LIGHT_PIN = 19
 SOIL_PIN = 6
 
 class Sensor:
@@ -178,7 +178,7 @@ class Main:
         userDetails = res.json()
         broeikas = userDetails["Broeikas"][0]
         self.farmID = broeikas["Id"]
-        self.minimumLightIntensity = broeikas["minimumLightIntensity"]
+        self.minimumLightIntensity = int(broeikas["minimumLightIntensity"])
         self.lightsOn = datetime.strptime(broeikas["lightsOn"], "%H:%M:%S").time()
         self.lightsOff = datetime.strptime(broeikas["lightsOff"], "%H:%M:%S").time()
         boxes = []
