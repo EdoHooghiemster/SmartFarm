@@ -64,6 +64,9 @@ class LightSensor(AnalogSensor):
     def __init__(self, name, unit, mcp, channel):
         super().__init__(name, unit, mcp, channel)
 
+    def calibrationFunction(self, x):
+        return x / 10.23
+
 class SoilMoistureSensor(AnalogSensor):
     def __init__(self, name, unit, mcp, channel):
         super().__init__(name, unit, mcp, channel)
@@ -175,6 +178,9 @@ class Main:
         userDetails = res.json()
         broeikas = userDetails["Broeikas"][0]
         self.farmID = broeikas["Id"]
+        self.minimumLightIntensity = broeikas["minimumLightIntensity"]
+        self.lightsOn = datetime.strptime(broeikas["lightsOn"], "%H:%M:%S").time()
+        self.lightsOff = datetime.strptime(broeikas["lightsOff"], "%H:%M:%S").time()
         boxes = []
         sensors = [0, 1, -1, -1, 2, 3]
         for i in range(1, 7):
@@ -263,6 +269,12 @@ class Main:
         self.interface.temp = data[5]
         self.interface.hum = data[6]
         self.reportSensors(data)
+        self.boxes = self.getBoxes()
+        now = datetime.now().time()
+        if data[4] < self.minimumLightIntensity and now > self.lightsOn and now < self.lightsOff:
+            self.turnOn("light")
+        else:
+            self.turnOff("light")
 
     def everyHour(self):
         for i in self.boxes:
