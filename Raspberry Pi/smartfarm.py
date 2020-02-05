@@ -131,6 +131,10 @@ class Main:
         self.sensors.append(s)
         s = HumiditySensor("Humidity", "%")
         self.sensors.append(s)
+        s = AnalogSensor("DET12", "", mcp, 4)
+        self.sensors.append(s)
+        s = AnalogSensor("DET56", "", mcp, 5)
+        self.sensors.append(s)
         self.actuators = []
         a = Actuator("valve1", V1_PIN)
         self.actuators.append(a)
@@ -182,12 +186,17 @@ class Main:
         self.lightsOn = datetime.strptime(broeikas["lightsOn"], "%H:%M:%S").time()
         self.lightsOff = datetime.strptime(broeikas["lightsOff"], "%H:%M:%S").time()
         boxes = []
-        sensors = [0, 1, -1, -1, 2, 3]
+        humSensors = [0, 1, -1, -1, 2, 3]
+        detSensors = [7, 7, -1, -1, 8, 8]
         for i in range(1, 7):
             plantID = broeikas["dock" + str(i)]
             if str(plantID) != "0":
-                big = (i == 1) # nog aanpassen, uit stekker halen
-                boxes.append(Box(i, big, self.token, plantID, sensors[i - 1]))
+                big = self.sensors[detSensors[i - 1]].read() < 10   
+                self.turnOn("soilSensors")
+                if self.sensors[detSensors[i - 1]].read() < 1000:
+                    big = False
+                self.turnOff("soilSensors")
+                boxes.append(Box(i, big, self.token, plantID, humSensors[i - 1]))
         return boxes
 
     def rain(self, valve):
