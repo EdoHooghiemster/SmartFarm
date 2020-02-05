@@ -151,7 +151,7 @@ class Main:
         tl._add_job(self.everyHour, timedelta(seconds = 60))
         tl._add_job(self.everyMinute, timedelta(seconds = 10))
         tl.start()
-        self.interface = Interface(self.boxes)
+        self.interface = Interface(self)
         self.interface.start()
 
     def getToken(self):
@@ -216,9 +216,9 @@ class Main:
 
     def reportSensors(self, data):
         jsonData = {
-            "lightIntensity" : data[4],
-            "temperature": data[5],
-            "humidity": data[6]
+            "lightIntensity": int(data[4]),
+            "temperature": str(round(data[5], 1)),
+            "humidity": int(data[6])
         }
         url = URL + "sensordatabroeikas/" + self.farmID
         res = requests.post(url, data = jsonData)
@@ -334,8 +334,8 @@ class Box:
 
     def reportPlantData(self):
         data = {
-            "currentSoilMoisture": self.soilHumidity,
-            "growthPercentage": self.plantGrowth
+            "currentSoilMoisture": int(self.soilHumidity),
+            "growthPercentage": int(self.plantGrowth)
         }
         url = URL + "sensordataplant/" + self.plantID
         res = requests.post(url, data = data)
@@ -343,8 +343,8 @@ class Box:
             print("Error posting data")
 
 class Interface:
-    def __init__(self, boxes):
-        self.boxes = boxes
+    def __init__(self, main):
+        self.main = main
         self.temp = 21.01234567
         self.hum = 65
         self.light = 30
@@ -626,7 +626,7 @@ class Interface:
                 self.drawRectangle(i * CELL_WIDTH + 10, j * CELL_HEIGHT + 10)
                 glColor(0.5, 0.5, 0.5) # grey
                 self.drawRectangle(i * CELL_WIDTH + 10, j * CELL_HEIGHT + 10, True)
-        for i in self.boxes:
+        for i in self.main.boxes:
             self.drawBox(i)        
 
     def draw(self):
