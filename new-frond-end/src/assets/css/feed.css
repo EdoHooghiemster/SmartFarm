@@ -8,6 +8,7 @@
 
 .plant-image {
     max-width: 30%;
+    min-width:  30%;
     float: left;
 }
 

@@ -262,7 +262,11 @@ unDockPlant = (dockNumber) => {
 
    let dock2 =       <Col lg={3} sm={5}><Card title="Dock 2" content={
                             <div>
+                              <p>Groei percentage:<br></br> 0 %</p> 
+
                                <p>Empty</p>    
+                               <br></br>
+                               <br></br>
 
                                <Button bsStyle="info" onClick={() => {this.test('dock2')}}>
                                   Dock Plant
@@ -287,7 +291,11 @@ unDockPlant = (dockNumber) => {
     }
     let dock3 =       <Col lg={3} sm={5}><Card title="Dock 3" content={
                             <div>
+                               <p>Groei percentage:<br></br> 0 %</p> 
+
                               <p>Empty</p>    
+                              <br></br>
+                              <br></br>
 
                                <Button bsStyle="info" onClick={() => {this.test('dock3')}}>
                                   Dock Plant
@@ -312,7 +320,10 @@ unDockPlant = (dockNumber) => {
     }
     let dock4 =       <Col lg={3} sm={5}><Card title="Dock 4" content={
                             <div>
+                              <p>Groei percentage:<br></br> 0 %</p> 
                               <p>Empty</p>    
+                              <br></br>
+                              <br></br>
 
                                <Button bsStyle="info" onClick={() => {this.test('dock4')}}>
                                   Dock Plant
@@ -337,6 +348,8 @@ unDockPlant = (dockNumber) => {
     let dock5 =       <Col lg={3} sm={5}><Card title="Dock 5" content={
                             <div>
                               <p>Empty</p>    
+                              <p>Groei percentage:<br></br> 0 %</p> 
+                              <br></br>
 
                                <Button bsStyle="info" onClick={() => {this.test('dock5')}}>
                                   Dock Plant
@@ -361,6 +374,7 @@ unDockPlant = (dockNumber) => {
     let dock6 =       <Col lg={3} sm={5}><Card title="Dock 6" content={
                             <div>
                               <p>Empty</p>
+                      
                                <Button bsStyle="info" onClick={() => {this.test('dock6')}}>
                                   Dock Plant
                                </Button>                     
@@ -404,8 +418,8 @@ unDockPlant = (dockNumber) => {
           <h4>ldr waarde 1 - 100</h4>
 
           <input
-            name="ldr"
-            type="ldr"
+            name="minimumLightIntensity"
+            type="minimumLightIntensity"
             value={this.state.minimumLightIntensity}
             onChange={this.handleChange2} />
         </label>
@@ -446,16 +460,16 @@ unDockPlant = (dockNumber) => {
                   <p>  Id: {broei.Id}</p>
                   <br></br>
                 <Col className="data">
-                  <p className="margright">Kleur: {broei.LedColor} </p> 
-                  <p className="margright">Lichtintensiteit: {broei.lightIntensity.slice(0,5)}</p>  
+                  <p className="margright">Kleur: {broei.LedColor} |</p> 
+                  <p className="margright">Lichtintensiteit: {broei.lightIntensity}</p>  
 
                 </Col>
 
                 <br></br>
                 <Col className="data">
 
-                <p className="margright">Luchtvochtigheid: {broei.humidity.slice(0,5)}</p>
-                <p className="margright">Temperatuur: {broei.temperature.slice(0,5)} </p>   
+                <p className="margright">Luchtvochtigheid: {broei.humidity}% |</p>
+                <p className="margright">Temperatuur: {broei.temperature}°</p>   
                 </Col>
                 {modal}
 
@@ -473,7 +487,6 @@ unDockPlant = (dockNumber) => {
               {dock4}
               {dock5}
               {dock6}
-              
 
 
           </Row>

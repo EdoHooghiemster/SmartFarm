@@ -45,5 +45,5 @@
 }
 
 .broeikasimg {
-    width: 25vw !important;
+    max-width: 100%;
 }

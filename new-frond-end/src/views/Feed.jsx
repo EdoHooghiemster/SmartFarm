@@ -89,7 +89,6 @@ insertComment(plantId) {
     if (result.status === 200) {
       this.setState({ loading: false })
       this.handleCloseModal();
-      alert("Comment is succesvol geplaatst!");
     }
   }).catch(e => {
     console.log(e);
